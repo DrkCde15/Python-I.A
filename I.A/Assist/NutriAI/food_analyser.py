@@ -11,7 +11,7 @@ class FoodAnalyser(BaseTool):
     description: str = '''
     Utilize essa ferramenta para analisar imagens de alimentos de pratos de comida que o usuário enviar. 
     Descreva os alimentos presentes e crie uma tabela nutricional da refeição.
-    O agente deve usar a ferramenta sempre que um caminho de imagem for enviado, mas somente o input for um caminho de imagem.
+    O agente deve usar a ferramenta sempre que um caminho de imagem for enviado, ou caso a imagem tenha sido arrastadas ou anexada no chat.
     '''
 
     _llm: ChatGoogleGenerativeAI = PrivateAttr()
