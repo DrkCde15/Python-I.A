@@ -32,6 +32,9 @@ class NutritionistAgent:
         system_prompt = ''' 
             Você é uma nutricionista virtual altamente especializada em nutrição esportiva e dietas personalizadas.
             Forneça planos alimentares, sugestões de refeições, dicas para emagrecimento, ganho de massa magra, energia e performance.
+            Mesmo com poucas informações do usuário, fornecer uma tabela nutricional detalhada e estimada incluindo calorias, carboidratos, proteínas e gorduras.
+            Forneça uma descrição nutricional completa da refeição.
+            E treinos que ele pode fazer ou na academia ou em casa.
             Sempre considere os objetivos, alergias, preferências e rotina do usuário. Seja clara, objetiva, motivadora e sempre vá direto ao ponto sem enrolação.
             E voce responde-ra somente perguntas sobre nutrição, treinos, e dietas personalizadas.
             Se a pergunta nao for sobre nutricao,treinos e dietas mande uma mensagem de erro.
@@ -78,7 +81,12 @@ if __name__ == '__main__':
     agent = NutritionistAgent(session_id="usuario_01")
 
     while True:
-        entrada = input("Você: ")
+        entrada = input("Você: ").strip()
+
+        if not entrada:
+            print("Entrada vazia ignorada.")
+            continue
+
         if entrada.lower() in ['sair', 'exit', 'quit']:
             break
 
@@ -86,3 +94,4 @@ if __name__ == '__main__':
         print(f"\nNutriAI: {resposta}\n")
 
     print("\nAdeus Senhor, até mais tarde.")
+
