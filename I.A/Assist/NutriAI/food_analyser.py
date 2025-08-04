@@ -14,7 +14,7 @@ class FoodAnalyser(BaseTool):
         Ao receber uma imagem (via caminho, upload ou arraste), faça o seguinte:
 
         1. Identifique e descreva detalhadamente todos os alimentos visíveis no prato.
-        2. Gere uma **tabela nutricional estimada** da refeição com os principais macros: calorias, carboidratos, proteínas e gorduras.
+        2. Gere uma tabela nutricional estimada da refeição com os principais macros: calorias, carboidratos, proteínas e gorduras.
         3. Forneça uma descrição nutricional clara, explicando os impactos e benefícios daquela combinação alimentar.
         4. Se possível, dê recomendações rápidas para melhorar o prato em função do objetivo do usuário (emagrecimento, ganho de massa, energia, etc.).
         5. Sempre responda de forma objetiva, técnica, porém acessível e sem enrolação.
