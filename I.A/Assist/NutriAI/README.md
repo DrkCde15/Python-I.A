@@ -44,7 +44,7 @@ Ele cria **planos alimentares detalhados**, sugere **treinos alinhados aos objet
 
 ### 2️⃣ Executando o NutriAI
 
-`python nutriAI.py`
+`python nutri.py`
 
 Digite suas perguntas ou objetivos (ex: “Quero ganhar massa muscular”) e receba planos e treinos detalhados.
 Para sair, digite: `sair`.
@@ -54,7 +54,7 @@ Para sair, digite: `sair`.
 
 ```
 NutriAI/
-├── nutriAI.py          # Script principal do agente nutricionista
+├── nutri.py          # Script principal do agente nutricionista
 ├── food_analyser.py    # Ferramenta para análise nutricional
 ├── chat_history.db     # Banco SQLite para histórico de chat (gerado automaticamente)
 ├── .env                # Variáveis de ambiente (API keys)

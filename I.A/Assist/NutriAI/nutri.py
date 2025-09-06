@@ -25,7 +25,7 @@ class NutritionistAgent:
     def __init__(self, session_id, db_path='sqlite:///chat_history.db') -> None: #<<< caminho do banco de dados
         self.llm = ChatGoogleGenerativeAI(
             model='gemini-1.5-flash',
-            temperature=0.1,
+            temperature=0.7,
         )
         
         # <<< PROMPT PERSONALIZADO PARA O AGENTE
