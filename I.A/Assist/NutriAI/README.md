@@ -14,11 +14,11 @@ Ele cria **planos alimentares detalhados**, sugere **treinos alinhados aos objet
 
 ## 🚀 Funcionalidades
 
-✅ **Planos Alimentares Personalizados** – Baseados no objetivo, restrições e preferências do usuário.
-✅ **Sugestões de Refeições Detalhadas** – Incluindo calorias, carboidratos, proteínas e gorduras.
-✅ **Treinos Alinhados ao Objetivo** – Academia ou treino em casa, conforme meta do usuário.
-✅ **Histórico de Conversas** – Mantém contexto e melhora recomendações ao longo da sessão.
-✅ **Respostas Claras e Objetivas** – Sem enrolação, evitando jargão técnico excessivo.
+✅ **Planos Alimentares Personalizados** – Baseados no objetivo, restrições e preferências do usuário.  
+✅ **Sugestões de Refeições Detalhadas** – Incluindo calorias, carboidratos, proteínas e gorduras.  
+✅ **Treinos Alinhados ao Objetivo** – Academia ou treino em casa, conforme meta do usuário.  
+✅ **Histórico de Conversas** – Mantém contexto e melhora recomendações ao longo da sessão.  
+✅ **Respostas Claras e Objetivas** – Sem enrolação, evitando jargão técnico excessivo.  
 ✅ **Verificação de Informações** – Solicita dados adicionais se necessário, não inventa informações.
 
 ---
@@ -27,6 +27,8 @@ Ele cria **planos alimentares detalhados**, sugere **treinos alinhados aos objet
 
 * **Python**
 * **Google Gemini API** (IA generativa)
+* **Flask** (Backend)
+* **Flask_cors** (Conecção com o frontend)
 * **LangChain** (Memória de conversas e orquestração do agente)
 * **SQLChatMessageHistory** (Banco de dados SQLite para histórico de chat)
 * **dotenv** (Variáveis de ambiente)
@@ -44,7 +46,7 @@ Ele cria **planos alimentares detalhados**, sugere **treinos alinhados aos objet
 
 ### 2️⃣ Executando o NutriAI
 
-`python nutri.py`
+`python api.py`
 
 Digite suas perguntas ou objetivos (ex: “Quero ganhar massa muscular”) e receba planos e treinos detalhados.
 Para sair, digite: `sair`.
@@ -54,10 +56,11 @@ Para sair, digite: `sair`.
 
 ```
 NutriAI/
-├── nutri.py          # Script principal do agente nutricionista
-├── food_analyser.py    # Ferramenta para análise nutricional
-├── chat_history.db     # Banco SQLite para histórico de chat (gerado automaticamente)
 ├── .env                # Variáveis de ambiente (API keys)
+├── api.py          # Script para o funcionamento da I.A no backend
+├── food_analyser.py    # Ferramenta para análise de imagens
+├── nutri.py          # Script principal do agente nutricionista
+├── chat_history.db     # Banco SQLite para histórico de chat
 └── requirements.txt    # Dependências do projeto
 ```
 
