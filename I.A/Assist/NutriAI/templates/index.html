@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>NutriAI Teste</title>
+<style>
+body {
+    font-family: Arial, sans-serif;
+    max-width: 600px;
+    margin: 50px auto;
+    background: #f7f7f7;
+    padding: 20px;
+    border-radius: 8px;
+}
+h1 { text-align: center; }
+textarea { width: 100%; height: 60px; margin-bottom: 10px; }
+input[type="file"] { margin-bottom: 10px; }
+button {
+    background: #28a745; color: white; border: none;
+    padding: 10px 20px; border-radius: 5px; cursor: pointer;
+    margin-bottom: 10px;
+}
+button:hover { background: #218838; }
+#chatBox {
+    background: #fff; border-radius: 5px; padding: 10px;
+    max-height: 400px; overflow-y: auto; margin-top: 20px;
+}
+.user { color: #0000ff; margin-bottom: 5px; }
+.ai { color: #28a745; margin-bottom: 15px; }
+</style>
+</head>
+<body>
+<h1>NutriAI Teste</h1>
+
+<textarea id="textMessage" placeholder="Digite sua mensagem..."></textarea><br>
+<button onclick="sendText()">Enviar Texto</button>
+
+<br>
+<input type="file" id="imageFile" accept="image/*"><br>
+<button onclick="sendImage()">Enviar Imagem</button>
+
+<div id="chatBox"></div>
+
+<script>
+const baseURL = "http://127.0.0.1:8000";
+let session_id = localStorage.getItem('session_id') || null;
+
+// Exibe mensagens no chat
+function addMessage(text, sender) {
+    const chatBox = document.getElementById("chatBox");
+    const msgDiv = document.createElement("div");
+    msgDiv.className = sender;
+    msgDiv.innerText = text;
+    chatBox.appendChild(msgDiv);
+    chatBox.scrollTop = chatBox.scrollHeight;
+}
+
+// Carrega histórico do MySQL ao abrir a página
+async function loadHistory() {
+    if (!session_id) return;
+
+    try {
+        const res = await fetch(`${baseURL}/chat_history?session_id=${session_id}`);
+        const data = await res.json();
+        if (data.success && data.history) {
+            data.history.forEach(msg => {
+                addMessage(`${msg.type === 'human' ? 'Você' : 'NutriAI'}: ${msg.content}`, msg.type === 'human' ? 'user' : 'ai');
+            });
+        }
+    } catch(err) {
+        console.error("Erro ao carregar histórico:", err);
+    }
+}
+
+// Envia mensagem de texto
+async function sendText() {
+    const message = document.getElementById("textMessage").value;
+    if (!message) return alert("Digite algo!");
+    addMessage("Você: " + message, "user");
+    document.getElementById("textMessage").value = "";
+
+    const formData = new FormData();
+    formData.append("message", message);
+    if (session_id) formData.append("session_id", session_id);
+
+    const res = await fetch(`${baseURL}/chat`, {
+        method: "POST",
+        body: formData
+    });
+    const data = await res.json();
+
+    if (data.session_id && !session_id) {
+        session_id = data.session_id;
+        localStorage.setItem('session_id', session_id);
+    }
+
+    addMessage("NutriAI: " + (data.response || data.error), "ai");
+}
+
+// Envia imagem
+async function sendImage() {
+    const fileInput = document.getElementById("imageFile");
+    if(!fileInput.files.length) return alert("Selecione uma imagem!");
+    addMessage("Você enviou uma imagem.", "user");
+
+    const formData = new FormData();
+    formData.append("file", fileInput.files[0]);
+    if (session_id) formData.append("session_id", session_id);
+
+    const res = await fetch(`${baseURL}/analyze_image`, {
+        method: "POST",
+        body: formData
+    });
+    const data = await res.json();
+    addMessage("NutriAI: " + (data.response || data.error), "ai");
+}
+
+// Inicializa
+loadHistory();
+</script>
+</body>
+</html>
