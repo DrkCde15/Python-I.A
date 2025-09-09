@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Cadastro NutriAI</title>
+<style>
+body {
+    font-family: Arial, sans-serif;
+    background: #f7f7f7;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+.container {
+    background: #fff;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    width: 400px;
+}
+h2 { text-align: center; margin-bottom: 20px; }
+input, select {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+button {
+    width: 100%;
+    padding: 10px;
+    background: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+button:hover { background: #0069d9; }
+p { text-align: center; margin-top: 15px; }
+a { color: #007bff; text-decoration: none; }
+a:hover { text-decoration: underline; }
+</style>
+</head>
+<body>
+<div class="container">
+    <h2>Cadastro NutriAI</h2>
+    <form method="POST" action="/register">
+        <input type="text" name="first_name" placeholder="Nome" required>
+        <input type="text" name="last_name" placeholder="Sobrenome" required>
+        <input type="date" name="birth_date" placeholder="Data de Nascimento" required>
+        <select name="gender" required>
+            <option value="">Gênero</option>
+            <option value="masculino">Masculino</option>
+            <option value="feminino">Feminino</option>
+            <option value="outro">Outro</option>
+        </select>
+        <input type="email" name="email" placeholder="E-mail" required>
+        <input type="password" name="password" placeholder="Senha" required>
+        <button type="submit">Cadastrar</button>
+    </form>
+    <p>Já tem conta? <a href="/login">Entre aqui</a></p>
+</div>
+</body>
+</html>

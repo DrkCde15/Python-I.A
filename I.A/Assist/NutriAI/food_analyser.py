@@ -11,7 +11,8 @@ import traceback
 
 class FoodAnalyser(BaseTool):
     name: str = "food_analyser"
-    description: str = "Analisa imagens de refeições fornecendo informações nutricionais detalhadas e sugestões de uma nutricionista especializada em nutrição esportiva."
+    description: str = """Analisa imagens de refeições fornecendo informações nutricionais detalhadas e 
+    sugestões de uma nutricionista especializada em nutrição esportiva."""
 
     _llm: ChatGoogleGenerativeAI = PrivateAttr()
     
