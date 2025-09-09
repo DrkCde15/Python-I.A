@@ -30,7 +30,7 @@ Ele cria **planos alimentares detalhados**, sugere **treinos alinhados aos objet
 * **Flask** (Backend)
 * **Flask_cors** (Conecção com o frontend)
 * **LangChain** (Memória de conversas e orquestração do agente)
-* **SQLChatMessageHistory** (Banco de dados SQLite para histórico de chat)
+* **mysql.connector** (Banco de dados MySQL para histórico de chat)
 * **dotenv** (Variáveis de ambiente)
 * **FoodAnalyser** (Ferramenta customizada de análise nutricional)
 
@@ -49,7 +49,6 @@ Ele cria **planos alimentares detalhados**, sugere **treinos alinhados aos objet
 `python api.py`
 
 Digite suas perguntas ou objetivos (ex: “Quero ganhar massa muscular”) e receba planos e treinos detalhados.
-Para sair, digite: `sair`.
 ---
 
 ## 📁 Estrutura do Projeto

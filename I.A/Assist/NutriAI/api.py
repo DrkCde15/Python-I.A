@@ -5,7 +5,7 @@ import os, uuid, logging
 
 # Configuração básica
 app = Flask(__name__)
-CORS(app)  # Em dev, permitir tudo. Em produção, ajuste via env.
+CORS(app)
 app.config['MAX_CONTENT_LENGTH'] = 10 * 1024 * 1024  # 10 MB
 
 # Logging
@@ -151,5 +151,4 @@ def analyze_image():
             logger.exception("Erro ao remover arquivo temporário")
 
 if __name__ == "__main__":
-    # Não usar debug=True em produção
     app.run(host="127.0.0.1", port=int(os.getenv('PORT', 8000)))

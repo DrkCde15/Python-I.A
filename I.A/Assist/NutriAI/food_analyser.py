@@ -7,7 +7,6 @@ import base64
 import os
 from io import BytesIO
 from pydantic import PrivateAttr
-from typing import Optional, Union
 import traceback
 
 class FoodAnalyser(BaseTool):
