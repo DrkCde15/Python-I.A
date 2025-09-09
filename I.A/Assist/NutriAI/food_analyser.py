@@ -144,7 +144,7 @@ class FoodAnalyser(BaseTool):
                         'type': 'image_url', 
                         'image_url': {
                             'url': f"data:image/jpeg;base64,{img_b64}",
-                            'detail': 'high'  # Para análise mais detalhada
+                            'detail': 'high'
                         }
                     }
                 ]
@@ -174,13 +174,13 @@ _Imagem: {os.path.basename(image_path)}_
     def _get_error_message(self, error: str) -> str:
         """Retorna uma mensagem de erro amigável"""
         if "FileNotFoundError" in error:
-            return "❌ **Imagem não encontrada**\n\nVerifique se o caminho da imagem está correto e tente novamente."
+            return "**Imagem não encontrada**\n\nVerifique se o caminho da imagem está correto e tente novamente."
         elif "formato" in error.lower() or "extension" in error.lower():
-            return "❌ **Formato não suportado**\n\nUse imagens nos formatos: JPG, PNG, WEBP, BMP ou GIF."
+            return "**Formato não suportado**\n\nUse imagens nos formatos: JPG, PNG, WEBP, BMP ou GIF."
         elif "size" in error.lower() or "memory" in error.lower():
-            return "❌ **Imagem muito grande**\n\nTente usar uma imagem menor (máximo 10MB)."
+            return "**Imagem muito grande**\n\nTente usar uma imagem menor (máximo 10MB)."
         else:
-            return f"❌ **Erro na análise**\n\nNão foi possível processar a imagem. Tente novamente com outra imagem.\n\n_Detalhes técnicos: {error}_"
+            return f"**Erro na análise**\n\nNão foi possível processar a imagem. Tente novamente com outra imagem.\n\n_Detalhes técnicos: {error}_"
 
     # Métodos adicionais para integração com o sistema
     def analyze_food_image(self, image_path: str) -> dict:

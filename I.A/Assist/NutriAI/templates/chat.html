@@ -100,7 +100,7 @@ async function sendText() {
 // Envia imagem
 async function sendImage() {
     const fileInput = document.getElementById("imageFile");
-    if(!fileInput.files.length) return alert("Selecione uma imagem!");
+    if (!fileInput.files.length) return alert("Selecione uma imagem!");
     addMessage("Você enviou uma imagem.", "user");
 
     const formData = new FormData();
@@ -112,7 +112,11 @@ async function sendImage() {
         body: formData
     });
     const data = await res.json();
-    addMessage("NutriAI: " + (data.response || data.error), "ai");
+
+    let response = data.response || data.error || "";
+    response = response.replace(/_Imagem:.*\n?/i, "");
+
+    addMessage(response.trim(), "ai");
 }
 
 // Inicializa
