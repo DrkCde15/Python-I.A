@@ -15,30 +15,29 @@ app.config['MAX_CONTENT_LENGTH'] = 10 * 1024 * 1024  # 10 MB
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-# Cache de agentes por session_id
+# Cache de agentes por session_id e user_id
 agent_cache = {}
 
-def get_agent(session_id: str):
+def get_agent(session_id: str, user_id: int = None, email: str = None):
     global agent_cache
     if not session_id:
         session_id = 'anon'
-
-    if session_id in agent_cache:
-        return agent_cache[session_id]
-
-    logger.info(f"Criando novo NutritionistAgent para session_id={session_id}")
+    key = f"{user_id}_{session_id}"
+    if key in agent_cache:
+        return agent_cache[key]
+    logger.info(f"Criando novo NutritionistAgent para user_id={user_id}, session_id={session_id}")
     mysql_config = None
-    agent = NutritionistAgent(session_id=session_id, mysql_config=mysql_config)
-    agent_cache[session_id] = agent
+    agent = NutritionistAgent(session_id=session_id, mysql_config=mysql_config, user_id=user_id, email=email)
+    agent_cache[key] = agent
     return agent
 
 # Conexão MySQL
 def get_db_connection():
     return mysql.connector.connect(
-        host='localhost',
-        user='root',
+        host=os.getenv('MYSQL_HOST', 'localhost'),
+        user=os.getenv('MYSQL_USER', 'root'),
         password=os.getenv('MYSQL_PASSWORD', ''),
-        database='nutri_chat_teste'
+        database=os.getenv('MYSQL_DATABASE', 'nutri_chat_teste')
     )
 
 # Pasta para uploads temporários
@@ -101,6 +100,7 @@ def login():
 
             session["user_id"] = user["id"]
             session["user_name"] = user["first_name"]
+            session["user_email"] = user["email"]
             return redirect(url_for("chat_page"))
 
         finally:
@@ -125,12 +125,13 @@ def chat_page():
 @app.route("/chat_history", methods=["GET"])
 def chat_history():
     session_id = request.args.get("session_id")
+    user_id = request.args.get("user_id")
     if not session_id:
         return jsonify({"success": False, "error": "session_id não informado"}), 400
 
     try:
-        agent = get_agent(session_id)
-        history = agent.get_conversation_history()
+        agent = get_agent(session_id=session_id, user_id=user_id)
+        history = agent.get_conversation_history(by_user=True)
         return jsonify({"success": True, "history": history})
     except Exception as e:
         logger.exception("Erro ao buscar histórico")
@@ -146,6 +147,8 @@ def chat():
         return jsonify({"message": "OK"}), 200
     try:
         session_id = request.headers.get('X-Session-ID') or request.form.get('session_id')
+        user_id = session.get("user_id")
+        email = session.get("user_email")
         if not session_id:
             session_id = str(uuid.uuid4())
 
@@ -159,7 +162,7 @@ def chat():
 
         logger.info(f"[{session_id}] Mensagem recebida: {message}")
 
-        agent = get_agent(session_id)
+        agent = get_agent(session_id=session_id, user_id=user_id, email=email)
         response = agent.run_text(message)
 
         logger.info(f"[{session_id}] Resposta gerada")
@@ -176,6 +179,8 @@ def analyze_image():
         return jsonify({"message": "OK"}), 200
     try:
         session_id = request.headers.get('X-Session-ID') or request.form.get('session_id')
+        user_id = session.get("user_id")
+        email = session.get("user_email")
         if not session_id:
             session_id = str(uuid.uuid4())
 
@@ -190,7 +195,7 @@ def analyze_image():
         temp_file_path = os.path.join(UPLOAD_FOLDER, f"{uuid.uuid4()}{file_ext}")
         file.save(temp_file_path)
 
-        agent = get_agent(session_id)
+        agent = get_agent(session_id=session_id, user_id=user_id, email=email)
         analysis_result = agent.run_image(temp_file_path)
 
         return jsonify({"success": True, "session_id": session_id, "response": analysis_result})
