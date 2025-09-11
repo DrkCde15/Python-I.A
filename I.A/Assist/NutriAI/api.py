@@ -40,8 +40,8 @@ def get_db_connection():
         database=os.getenv('MYSQL_DATABASE', 'nutri_chat_teste')
     )
 
-# Pasta para uploads temporários
-UPLOAD_FOLDER = "temp_uploads"
+# Pasta para uploads
+UPLOAD_FOLDER = r"C:\Users\Júlio César\Pictures\Uploads"
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 # ---------------- ROTAS DE AUTENTICAÇÃO ----------------
@@ -192,11 +192,11 @@ def analyze_image():
             return jsonify({"error": "Nenhum arquivo selecionado"}), 400
 
         file_ext = os.path.splitext(file.filename)[1]
-        temp_file_path = os.path.join(UPLOAD_FOLDER, f"{uuid.uuid4()}{file_ext}")
-        file.save(temp_file_path)
+        file_path = os.path.join(UPLOAD_FOLDER, f"{uuid.uuid4()}{file_ext}")
+        file.save(file_path)
 
         agent = get_agent(session_id=session_id, user_id=user_id, email=email)
-        analysis_result = agent.run_image(temp_file_path)
+        analysis_result = agent.run_image(file_path)
 
         return jsonify({"success": True, "session_id": session_id, "response": analysis_result})
 
@@ -206,8 +206,8 @@ def analyze_image():
 
     finally:
         try:
-            if 'temp_file_path' in locals() and os.path.exists(temp_file_path):
-                os.remove(temp_file_path)
+            if 'file_path' in locals() and os.path.exists(file_path):
+                os.remove(file_path)
         except Exception:
             logger.exception("Erro ao remover arquivo temporário")
 
