@@ -217,7 +217,7 @@ def analyze_image():
 # ---------------- ROTA HOME ----------------
 @app.route("/", methods=["GET"])
 def home():
-    return redirect(url_for("login"))
+    return redirect(url_for("render_home"))
 
 if __name__ == "__main__":
     app.run(host="127.0.0.1", port=int(os.getenv('PORT', 8000)))

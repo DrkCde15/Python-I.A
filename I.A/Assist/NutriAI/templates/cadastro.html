@@ -326,7 +326,7 @@
       formData.append('password', document.getElementById('senha').value);
 
       try {
-        const response = await fetch('/register', {
+        const response = await fetch('/cadastro', {
           method: 'POST',
           body: formData
         });
