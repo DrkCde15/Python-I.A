@@ -167,13 +167,15 @@ class NutritionistAgent:
         self.session_id = session_id
         self.user_id = user_id
         self.email = email
-        self.llm = ChatGoogleGenerativeAI(model="gemini-1.5-flash", temperature=0.7)
+        self.llm = ChatGoogleGenerativeAI(model="gemini-2.5-flash", temperature=0.7)
 
         system_prompt = """
         Você é uma nutricionista virtual especializada em nutrição esportiva.
+        - Sempre que você receber um "oi" ou "olá", responda com "Olá sou seu assistente de I.A, em que posso ajudar hoje sobre treinos ou dietas?"
         - Sugestões de refeições detalhadas e tabela nutricional.
         - Treinos adaptados conforme objetivo.
         - Comunicação clara, objetiva e motivadora.
+        - Se o usuário pedir algo fora do escopo, responda "Desculpe, não posso ajudar com isso, pois estou aqui para ajudar com treinos e dietas."
         """
 
         if mysql_config is None:
@@ -182,7 +184,7 @@ class NutritionistAgent:
                 "port": int(os.getenv("MYSQL_PORT", 3306)),
                 "user": os.getenv("MYSQL_USER", "root"),
                 "password": os.getenv("MYSQL_PASSWORD", ""),
-                "database": os.getenv("MYSQL_DATABASE", "nutri_chat_teste"),
+                "database": os.getenv("MYSQL_DATABASE", "nutri_chat"),
                 "charset": "utf8mb4",
                 "autocommit": True,
                 "connection_timeout": 60,

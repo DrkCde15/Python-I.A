@@ -1,67 +1,485 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login NutriAI</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: #f0f2f5;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
-        .container {
-            background: #fff;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 0 15px rgba(0,0,0,0.2);
-            width: 300px;
-            text-align: center;
-        }
-        input {
-            width: 100%;
-            padding: 10px;
-            margin: 8px 0;
-            border-radius: 5px;
-            border: 1px solid #ccc;
-        }
-        button {
-            width: 100%;
-            padding: 10px;
-            background-color: #28a745;
-            border: none;
-            color: #fff;
-            font-size: 16px;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        button:hover {
-            background-color: #218838;
-        }
-        p {
-            margin-top: 15px;
-        }
-        a {
-            color: #007bff;
-            text-decoration: none;
-        }
-        a:hover {
-            text-decoration: underline;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - NutriNow</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .login-container {
+      width: 100%;
+      max-width: 1200px;
+    }
+
+    /* Header */
+    .login-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 40px;
+      gap: 20px;
+    }
+
+    .icon-btn {
+      background: #fff;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: #059669;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      transition: all 0.3s ease;
+      border: none;
+      flex-shrink: 0;
+    }
+
+    .icon-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(0,0,0,0.2);
+    }
+
+    .icon-btn .material-symbols-outlined {
+      font-size: 24px;
+    }
+
+    .menu {
+      display: flex;
+      gap: 15px;
+      flex-grow: 1;
+      justify-content: center;
+    }
+
+    .menu-btn {
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 25px;
+      padding: 10px 24px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      color: #059669;
+      text-decoration: none;
+      border: none;
+      font-size: 14px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .menu-btn:hover {
+      background: #fff;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+
+    /* Card de login */
+    .login-card {
+      background: rgba(255, 255, 255, 0.98);
+      padding: 45px 40px;
+      border-radius: 24px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+      max-width: 420px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .login-card h1 {
+      margin-bottom: 30px;
+      color: #1f2937;
+      font-size: 28px;
+      font-weight: 600;
+    }
+
+    /* Botões sociais */
+    .btn-social {
+      width: 100%;
+      padding: 14px 20px;
+      margin-bottom: 12px;
+      border-radius: 12px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 12px;
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      background: #fff;
+      border: 2px solid #e5e7eb;
+      color: #374151;
+    }
+
+    .btn-social i {
+      font-size: 18px;
+    }
+
+    .btn-social.google i { 
+      color: #ea4335; 
+    }
+    
+    .btn-social.facebook i { 
+      color: #1877f2; 
+    }
+
+    .btn-social:hover {
+      background: #f9fafb;
+      border-color: #d1d5db;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+
+    /* Divisor */
+    .divider {
+      display: flex;
+      align-items: center;
+      text-align: center;
+      margin: 25px 0;
+      color: #9ca3af;
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    .divider::before, 
+    .divider::after {
+      content: '';
+      flex: 1;
+      border-bottom: 1px solid #e5e7eb;
+    }
+
+    .divider span {
+      margin: 0 15px;
+    }
+
+    /* Form */
+    .login-form {
+      margin-bottom: 20px;
+    }
+
+    /* Inputs */
+    .input-group {
+      display: flex;
+      align-items: center;
+      background: #f9fafb;
+      border: 2px solid #e5e7eb;
+      border-radius: 12px;
+      padding: 14px 16px;
+      margin-bottom: 15px;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+
+    .input-group:focus-within {
+      border-color: #10b981;
+      background: #fff;
+      box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+    }
+
+    .input-group .material-symbols-outlined {
+      margin-right: 12px;
+      color: #9ca3af;
+      font-size: 22px;
+    }
+
+    .input-group input {
+      border: none;
+      outline: none;
+      background: transparent;
+      flex: 1;
+      font-size: 14px;
+      color: #1f2937;
+      padding-right: 35px;
+    }
+
+    .input-group input::placeholder {
+      color: #9ca3af;
+    }
+
+    /* Toggle senha */
+    .toggle-btn {
+      position: absolute;
+      right: 14px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 4px;
+      color: #9ca3af;
+      transition: color 0.3s ease;
+    }
+
+    .toggle-btn:hover {
+      color: #10b981;
+    }
+
+    .toggle-btn svg {
+      width: 22px;
+      height: 22px;
+      display: block;
+      stroke-width: 2;
+    }
+
+    /* Botões */
+    .btn-primary {
+      width: 100%;
+      padding: 15px;
+      margin-top: 10px;
+      border: none;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      color: #fff;
+      font-weight: 600;
+      font-size: 15px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+    }
+
+    .btn-primary:hover:not(:disabled) {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+    }
+
+    .btn-primary:disabled {
+      background: #9ca3af;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+
+    .btn-secondary {
+      width: 100%;
+      padding: 15px;
+      margin-top: 10px;
+      border: 2px solid #10b981;
+      border-radius: 12px;
+      background: transparent;
+      color: #059669;
+      font-weight: 600;
+      font-size: 15px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .btn-secondary:hover {
+      background: #ecfdf5;
+      transform: translateY(-1px);
+    }
+
+    /* Esqueci a senha */
+    .forgot-pass {
+      background: none;
+      border: none;
+      color: #6b7280;
+      margin-top: 20px;
+      font-size: 14px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      justify-content: center;
+      transition: color 0.3s ease;
+      font-weight: 500;
+    }
+
+    .forgot-pass:hover {
+      color: #059669;
+    }
+
+    .forgot-pass .material-symbols-outlined {
+      font-size: 18px;
+    }
+
+    /* Mensagens */
+    .mensagem {
+      margin-top: 15px;
+      padding: 12px 18px;
+      border-radius: 12px;
+      text-align: center;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .mensagem-sucesso {
+      background: #d1fae5;
+      color: #065f46;
+      border: 1px solid #a7f3d0;
+    }
+
+    .mensagem-erro {
+      background: #fee2e2;
+      color: #991b1b;
+      border: 1px solid #fecaca;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    /* Responsivo */
+    @media (max-width: 500px) {
+      .login-card {
+        padding: 35px 25px;
+      }
+
+      .login-card h1 {
+        font-size: 24px;
+      }
+
+      .menu {
+        gap: 10px;
+      }
+
+      .menu-btn {
+        padding: 8px 16px;
+        font-size: 13px;
+      }
+    }
+  </style>
 </head>
 <body>
-<div class="container">
-    <h2>Login NutriAI</h2>
-    <form method="POST" action="/login">
-        <input type="text" name="email" placeholder="E-mail" required>
-        <input type="password" name="password" placeholder="Senha" required>
-        <button type="submit">Entrar</button>
-    </form>
-    <p>Não tem conta? <a href="/register">Cadastre-se</a></p>
-</div>
+  <div class="login-container">
+    <header class="login-header">
+      <button class="icon-btn" onclick="navegarPara('seguranca')">
+        <span class="material-symbols-outlined">lock</span>
+      </button>
+
+      <nav class="menu">
+        <a href="#" class="menu-btn" onclick="navegarPara('home'); return false;">Home</a>
+        <a href="#" class="menu-btn" onclick="navegarPara('chatbot'); return false;">ChatBot</a>
+      </nav>
+
+      <button class="icon-btn" onclick="navegarPara('cadastro')">
+        <span class="material-symbols-outlined">person</span>
+      </button>
+    </header>
+
+    <main class="login-card">
+      <h1>Bem-vindo de volta</h1>
+
+      <button class="btn-social google" onclick="loginGoogle()">
+        <i class="fa-brands fa-google"></i> Conectar com o Google
+      </button>
+
+      <button class="btn-social facebook" onclick="loginFacebook()">
+        <i class="fa-brands fa-facebook"></i> Conectar com o Facebook
+      </button>
+
+      <div class="divider"><span>OU</span></div>
+
+      <form class="login-form" id="formLogin">
+        <div class="input-group">
+          <span class="material-symbols-outlined">email</span>
+          <input type="email" id="email" placeholder="Email" required />
+        </div>
+
+        <div class="input-group">
+          <span class="material-symbols-outlined">lock</span>
+          <input type="password" id="senha" placeholder="Senha" required minlength="6" />
+          <button type="button" class="toggle-btn" id="togglePassword">
+            <svg id="eyeIcon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path id="eyePath1" stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+              <path id="eyePath2" stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7Z" />
+              <path id="eyeSlash" class="hidden" stroke-linecap="round" stroke-linejoin="round" d="M3 3l18 18" />
+            </svg>
+          </button>
+        </div>
+
+        <button type="submit" class="btn-primary">Entrar</button>
+        <button type="button" class="btn-secondary" onclick="navegarPara('cadastro')">Criar conta</button>
+      </form>
+
+      <button type="button" class="forgot-pass" onclick="navegarPara('esqueci-senha')">
+        <span class="material-symbols-outlined">help</span> Esqueci minha senha
+      </button>
+
+      <div id="mensagemSucesso" class="mensagem mensagem-sucesso hidden"></div>
+      <div id="mensagemErro" class="mensagem mensagem-erro hidden"></div>
+    </main>
+  </div>
+
+  <script>
+    const form = document.getElementById('formLogin');
+    const togglePasswordBtn = document.getElementById('togglePassword');
+    const senhaInput = document.getElementById('senha');
+    const eyeSlash = document.getElementById('eyeSlash');
+    const mensagemSucesso = document.getElementById('mensagemSucesso');
+    const mensagemErro = document.getElementById('mensagemErro');
+
+    // Toggle senha
+    togglePasswordBtn.addEventListener('click', () => {
+      const tipo = senhaInput.type === 'password' ? 'text' : 'password';
+      senhaInput.type = tipo;
+      eyeSlash.classList.toggle('hidden');
+    });
+
+    // Submit do formulário
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      // Limpar mensagens anteriores
+      mensagemErro.classList.add('hidden');
+      mensagemSucesso.classList.add('hidden');
+      
+      const formData = new FormData();
+      formData.append('email', document.getElementById('email').value);
+      formData.append('password', document.getElementById('senha').value);
+
+      try {
+        const response = await fetch('/login', {
+          method: 'POST',
+          body: formData
+        });
+
+        if (response.redirected) {
+          // Se o servidor redirecionar, seguir o redirect
+          window.location.href = response.url;
+        } else if (response.ok) {
+          mensagemSucesso.classList.remove('hidden');
+          mensagemSucesso.textContent = 'Login realizado com sucesso!';
+          
+          setTimeout(() => {
+            window.location.href = '/chat_page';
+          }, 1000);
+        } else {
+          mensagemErro.classList.remove('hidden');
+          mensagemErro.textContent = 'Email ou senha inválidos!';
+        }
+      } catch (error) {
+        console.error('Erro:', error);
+        mensagemErro.classList.remove('hidden');
+        mensagemErro.textContent = 'Erro de conexão. Verifique sua internet.';
+      }
+    });
+
+    // Funções de navegação
+    function navegarPara(pagina) {
+      window.location.href = '/' + pagina;
+    }
+
+    function loginGoogle() {
+      alert('Login com Google em desenvolvimento');
+      // Implementar OAuth do Google
+    }
+
+    function loginFacebook() {
+      alert('Login com Facebook em desenvolvimento');
+      // Implementar OAuth do Facebook
+    }
+  </script>
 </body>
 </html>

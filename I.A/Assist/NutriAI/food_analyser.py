@@ -8,6 +8,7 @@ import os
 from io import BytesIO
 from pydantic import PrivateAttr
 import traceback
+from datetime import datetime
 
 class FoodAnalyser(BaseTool):
     name: str = "food_analyser"
@@ -15,244 +16,217 @@ class FoodAnalyser(BaseTool):
     sugestões de uma nutricionista especializada em nutrição esportiva."""
 
     _llm: ChatGoogleGenerativeAI = PrivateAttr()
-    
+
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self._llm = ChatGoogleGenerativeAI(
-            model='gemini-1.5-flash', 
+            model='gemini-2.5-flash',
             temperature=0.7,
             max_tokens=2048
         )
 
+    # ----------------- Implementação obrigatória BaseTool -----------------
     def _run(self, image_path: str) -> str:
-        """Análise síncrona da imagem"""
-        try:
-            return self._analyze_image(image_path)
-        except Exception as e:
-            print(f"Erro na análise da imagem: {traceback.format_exc()}")
-            return f"Não foi possível analisar a imagem. Erro: {str(e)}"
+        """Análise síncrona do BaseTool"""
+        return self._analyze_image(image_path)
 
     async def _arun(self, image_path: str) -> str:
-        """Análise assíncrona da imagem"""
-        try:
-            return self._analyze_image(image_path)
-        except Exception as e:
-            print(f"Erro na análise assíncrona da imagem: {traceback.format_exc()}")
-            return f"Não foi possível analisar a imagem. Erro: {str(e)}"
+        """Análise assíncrona do BaseTool"""
+        return self._analyze_image(image_path)
+
+    # ----------------- Funções auxiliares -----------------
+    def _get_timestamp(self) -> str:
+        return datetime.now().isoformat()
 
     def _validate_image_path(self, image_path: str) -> bool:
-        """Valida se o arquivo de imagem existe e é válido"""
         if not os.path.exists(image_path):
             raise FileNotFoundError(f"Arquivo não encontrado: {image_path}")
-        
         valid_extensions = {'.jpg', '.jpeg', '.png', '.webp', '.bmp', '.gif'}
         _, ext = os.path.splitext(image_path.lower())
-        
         if ext not in valid_extensions:
             raise ValueError(f"Formato de imagem não suportado: {ext}")
-        
         return True
 
     def _process_image(self, image_path: str) -> str:
-        """Processa e converte a imagem para base64"""
         self._validate_image_path(image_path)
-        
-        try:
-            # Abre e processa a imagem
-            with Image.open(image_path) as image:
-                # Converte para RGB se necessário (remove transparência)
-                if image.mode in ('RGBA', 'LA'):
-                    background = Image.new('RGB', image.size, (255, 255, 255))
-                    background.paste(image, mask=image.split()[-1] if image.mode == 'RGBA' else None)
-                    image = background
-                elif image.mode != 'RGB':
-                    image = image.convert('RGB')
-                
-                # Redimensiona se muito grande (otimização)
-                max_size = (1024, 1024)
-                if image.size[0] > max_size[0] or image.size[1] > max_size[1]:
-                    image.thumbnail(max_size, Image.Resampling.LANCZOS)
-                
-                # Converte para base64
-                buffered = BytesIO()
-                image.save(buffered, format="JPEG", quality=85, optimize=True)
-                img_b64 = base64.b64encode(buffered.getvalue()).decode("utf-8")
-                
-                return img_b64
-                
-        except Exception as e:
-            raise Exception(f"Erro ao processar imagem: {str(e)}")
+        with Image.open(image_path) as image:
+            if image.mode in ('RGBA', 'LA'):
+                background = Image.new('RGB', image.size, (255, 255, 255))
+                background.paste(image, mask=image.split()[-1] if image.mode == 'RGBA' else None)
+                image = background
+            elif image.mode != 'RGB':
+                image = image.convert('RGB')
+
+            max_size = (1024, 1024)
+            if image.size[0] > max_size[0] or image.size[1] > max_size[1]:
+                image.thumbnail(max_size, Image.Resampling.LANCZOS)
+
+            buffered = BytesIO()
+            image.save(buffered, format="JPEG", quality=85, optimize=True)
+            return base64.b64encode(buffered.getvalue()).decode("utf-8")
 
     def _create_analysis_prompt(self) -> str:
-        """Cria o prompt detalhado para análise nutricional"""
         return '''
-        Você é uma nutricionista especializada em nutrição esportiva. Analise a imagem da refeição enviada e forneça:
+Você é uma nutricionista especializada em nutrição esportiva. Analise a imagem da refeição e forneça
+uma tabela nutricional em Markdown seguindo este formato:
 
-        ## IDENTIFICAÇÃO DOS ALIMENTOS
-        - Liste todos os alimentos visíveis na imagem
-        - Estime as quantidades/porções de cada item
-        - Identifique o método de preparo (grelhado, frito, cozido, etc.)
+| Nutriente | Quantidade | % VD* |
+|-----------|------------|-------|
+| Calorias | ... | ... |
+| Carboidratos | ... | ... |
+| Proteínas | ... | ... |
+| Gorduras Totais | ... | ... |
+| Gorduras Saturadas | ... | ... |
+| Fibras | ... | ... |
+| Sódio | ... | ... |
 
-        ## ANÁLISE NUTRICIONAL
-        Calcule e apresente em formato de tabela:
-        
-        | Nutriente | Quantidade | % VD* |
-        |-----------|------------|-------|
-        | Calorias | X kcal | X% |
-        | Carboidratos | X g | X% |
-        | Proteínas | X g | X% |
-        | Gorduras Totais | X g | X% |
-        | Gorduras Saturadas | X g | X% |
-        | Fibras | X g | X% |
-        | Sódio | X mg | X% |
-        
-        *Valores Diários baseados em dieta de 2000 kcal
+*VD = Valores Diários de referência baseados em uma dieta de 2.000 kcal
 
-        ## AVALIAÇÃO NUTRICIONAL
-        - Qualidade nutricional da refeição (1-10)
-        - Adequação para objetivos esportivos
-        - Pontos positivos e negativos
+Após a tabela, inclua:
+1. **Avaliação Geral**: Qualidade nutricional da refeição (Excelente/Boa/Regular/Precisa melhorar)
+2. **Pontos Positivos**: O que está bom na refeição
+3. **Sugestões de Melhoria**: 2-3 dicas práticas e objetivas
 
-        ## SUGESTÕES DE MELHORIA
-        - Como otimizar esta refeição
-        - Substituições mais saudáveis
-        - Ajustes para diferentes objetivos (ganho de massa, perda de peso, performance)
+Seja clara, objetiva e use linguagem acessível.
+'''
 
-        ## TIMING DE CONSUMO
-        - Melhor momento para consumir (pré/pós treino, etc.)
-        - Combinações ideais com outros alimentos
-
-        Seja precisa, educativa e motivadora em suas orientações!
-        '''
+    def _extract_content_from_response(self, response) -> str:
+        """Extrai o conteúdo de texto do objeto AIMessage de forma robusta"""
+        try:
+            # Método 1: Atributo content (mais comum)
+            if hasattr(response, 'content') and response.content:
+                if isinstance(response.content, str):
+                    return response.content
+                elif isinstance(response.content, list):
+                    # Às vezes o content é uma lista de dicts
+                    text_parts = []
+                    for item in response.content:
+                        if isinstance(item, dict) and 'text' in item:
+                            text_parts.append(item['text'])
+                        elif isinstance(item, str):
+                            text_parts.append(item)
+                    if text_parts:
+                        return ' '.join(text_parts)
+            
+            # Método 2: Conversão direta para string
+            if hasattr(response, '__str__'):
+                content_str = str(response)
+                # Remove metadados se presentes
+                if 'content=' in content_str:
+                    # Extrai apenas o conteúdo útil
+                    start = content_str.find("content='") + 9
+                    end = content_str.find("', additional_kwargs")
+                    if start > 8 and end > start:
+                        return content_str[start:end]
+            
+            # Método 3: Tentar acessar diretamente como dict
+            if isinstance(response, dict) and 'content' in response:
+                return str(response['content'])
+            
+            # Se tudo falhar, retorna representação em string
+            return str(response)
+            
+        except Exception as e:
+            print(f"Erro ao extrair conteúdo: {e}")
+            return f"Erro ao processar resposta: {str(e)}"
 
     def _analyze_image(self, image_path: str) -> str:
-        """Realiza a análise completa da imagem"""
+        """Análise completa retornando apenas a tabela + dicas"""
         try:
-            # Processa a imagem
             img_b64 = self._process_image(image_path)
-            
-            # Cria as mensagens para o LLM
+
             system_message = SystemMessage(content=self._create_analysis_prompt())
-            
-            human_message = HumanMessage(
-                content=[
-                    {
-                        'type': 'text', 
-                        'text': 'Analise esta imagem de refeição seguindo todas as diretrizes fornecidas:'
-                    },
-                    {
-                        'type': 'image_url', 
-                        'image_url': {
-                            'url': f"data:image/jpeg;base64,{img_b64}",
-                            'detail': 'high'
-                        }
-                    }
-                ]
-            )
+            human_message = HumanMessage(content=[
+                {'type': 'text', 'text': 'Analise esta imagem de refeição e retorne a tabela nutricional completa com avaliação e dicas:'},
+                {'type': 'image_url', 'image_url': {'url': f"data:image/jpeg;base64,{img_b64}", 'detail': 'high'}}
+            ])
 
             # Invoca o modelo
-            messages = [system_message, human_message]
-            response = self._llm.invoke(messages)
+            response = self._llm.invoke([system_message, human_message])
             
-            # Adiciona metadados da análise
-            analysis_result = f"""
-🔍 **ANÁLISE NUTRICIONAL DA REFEIÇÃO**
+            # Extrai o conteúdo de forma robusta
+            tabela_texto = self._extract_content_from_response(response)
+            
+            # Verifica se conseguiu extrair conteúdo válido
+            if not tabela_texto or len(tabela_texto) < 50:
+                return f"Erro: Resposta vazia ou inválida do modelo. Resposta recebida: {str(response)[:200]}"
+            
+            # Formata o resultado final
+            result_text = f"""ANÁLISE NUTRICIONAL DA REFEIÇÃO
 _Imagem: {os.path.basename(image_path)}_
 
-{response.content}
+{tabela_texto}
 
 ---
-💡 **Dica da Nutricionista**: Para análises mais precisas, inclua informações sobre suas características (peso, altura, objetivos) e atividade física!
-            """.strip()
-            
-            return analysis_result
-            
+💡 **Dica da Nutricionista**: Para análises mais precisas, inclua informações sobre suas características (peso, altura, objetivos) e nível de atividade física!"""
+
+            return result_text
+
         except Exception as e:
-            print(f"Erro na análise: {traceback.format_exc()}")
-            return self._get_error_message(str(e))
+            error_details = traceback.format_exc()
+            print(f"Erro completo na análise:\n{error_details}")
+            return f"""Não foi possível analisar a imagem.
 
-    def _get_error_message(self, error: str) -> str:
-        """Retorna uma mensagem de erro amigável"""
-        if "FileNotFoundError" in error:
-            return "**Imagem não encontrada**\n\nVerifique se o caminho da imagem está correto e tente novamente."
-        elif "formato" in error.lower() or "extension" in error.lower():
-            return "**Formato não suportado**\n\nUse imagens nos formatos: JPG, PNG, WEBP, BMP ou GIF."
-        elif "size" in error.lower() or "memory" in error.lower():
-            return "**Imagem muito grande**\n\nTente usar uma imagem menor (máximo 10MB)."
-        else:
-            return f"**Erro na análise**\n\nNão foi possível processar a imagem. Tente novamente com outra imagem.\n\n_Detalhes técnicos: {error}_"
+**Erro técnico**: {str(e)}
 
-    # Métodos adicionais para integração com o sistema
-    def analyze_food_image(self, image_path: str) -> dict:
-        """Método que retorna análise em formato estruturado"""
-        try:
-            analysis = self._analyze_image(image_path)
-            
-            return {
-                'success': True,
-                'analysis': analysis,
-                'image_path': image_path,
-                'timestamp': self._get_timestamp()
-            }
-        except Exception as e:
-            return {
-                'success': False,
-                'error': str(e),
-                'image_path': image_path,
-                'timestamp': self._get_timestamp()
-            }
+**Possíveis causas**:
+- Formato de imagem não suportado
+- Arquivo corrompido ou muito grande
 
-    def _get_timestamp(self) -> str:
-        """Retorna timestamp atual"""
-        from datetime import datetime
-        return datetime.now().isoformat()
+**Sugestões**:
+1. Verifique se a imagem está em formato válido (JPG, PNG, WEBP)
+2. Tente com uma imagem menor (< 5MB)"""
+
+    # ----------------- Interface pública -----------------
+    def analyze_food_image(self, image_path: str) -> str:
+        return self._analyze_image(image_path)
 
     def get_supported_formats(self) -> list:
-        """Retorna lista de formatos suportados"""
         return ['.jpg', '.jpeg', '.png', '.webp', '.bmp', '.gif']
 
-# Classe utilitária para batch processing
+
+# ----------------- Batch processing -----------------
 class BatchFoodAnalyser:
     """Classe para analisar múltiplas imagens"""
-    
+
     def __init__(self):
         self.analyser = FoodAnalyser()
-    
+
     def analyze_multiple_images(self, image_paths: list) -> list:
-        """Analisa múltiplas imagens e retorna resultados"""
+        """Analisa múltiplas imagens e retorna lista de resultados (tabela + dicas)"""
         results = []
-        
         for i, path in enumerate(image_paths, 1):
             print(f"Analisando imagem {i}/{len(image_paths)}: {os.path.basename(path)}")
-            
             result = self.analyser.analyze_food_image(path)
-            results.append(result)
-        
+            results.append({
+                'path': path,
+                'filename': os.path.basename(path),
+                'analysis': result
+            })
         return results
-    
+
     def create_summary_report(self, results: list) -> str:
-        """Cria relatório resumido das análises"""
-        successful = [r for r in results if r['success']]
-        failed = [r for r in results if not r['success']]
-        
-        report = f"""
-# RELATÓRIO DE ANÁLISES NUTRICIONAIS
+        """Cria relatório final com todas as tabelas em sequência"""
+        report = f"""# 📊 RELATÓRIO DE ANÁLISES NUTRICIONAIS
 
-## Resumo
-- **Total de imagens**: {len(results)}
-- **Análises bem-sucedidas**: {len(successful)}
-- **Falhas**: {len(failed)}
+**Total de imagens analisadas**: {len(results)}
+**Data**: {datetime.now().strftime('%d/%m/%Y %H:%M')}
 
-## Imagens Analisadas
+---
+
+"""
+        for i, result in enumerate(results, 1):
+            analysis = result['analysis'] if isinstance(result, dict) else result
+            filename = result.get('filename', f'Imagem {i}') if isinstance(result, dict) else f'Imagem {i}'
+            
+            report += f"""## {i}. {filename}
+
+{analysis}
+
+---
+
 """
         
-        for i, result in enumerate(successful, 1):
-            report += f"\n### {i}. {os.path.basename(result['image_path'])}\n"
-            report += f"{result['analysis']}\n\n---\n"
-        
-        if failed:
-            report += "\n## Erros Encontrados\n"
-            for result in failed:
-                report += f"- **{os.path.basename(result['image_path'])}**: {result['error']}\n"
+        report += "\n\n**Observação Final**: Este relatório é baseado em estimativas visuais e não substitui a consulta com um nutricionista profissional."
         
         return report

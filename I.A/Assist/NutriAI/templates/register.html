@@ -1,65 +1,362 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<title>Cadastro NutriAI</title>
-<style>
-body {
-    font-family: Arial, sans-serif;
-    background: #f7f7f7;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-}
-.container {
-    background: #fff;
-    padding: 30px;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    width: 400px;
-}
-h2 { text-align: center; margin-bottom: 20px; }
-input, select {
-    width: 100%;
-    padding: 10px;
-    margin-bottom: 15px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-}
-button {
-    width: 100%;
-    padding: 10px;
-    background: #007bff;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-}
-button:hover { background: #0069d9; }
-p { text-align: center; margin-top: 15px; }
-a { color: #007bff; text-decoration: none; }
-a:hover { text-decoration: underline; }
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cadastro - NutriNow</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #1a8f5a 0%, #2d9f68 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .cadastro-container {
+      width: 100%;
+      max-width: 450px;
+    }
+
+    .intro {
+      text-align: center;
+      margin-bottom: 30px;
+      color: white;
+    }
+
+    .intro h1 {
+      font-size: 28px;
+      font-weight: 600;
+      margin-bottom: 10px;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .intro p {
+      font-size: 14px;
+      opacity: 0.95;
+      line-height: 1.5;
+    }
+
+    .form-card {
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 20px;
+      padding: 40px 35px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 8px;
+    }
+
+    .form-group input,
+    .form-group select {
+      width: 100%;
+      padding: 14px 18px;
+      border: 2px solid #d0d0d0;
+      border-radius: 25px;
+      font-size: 14px;
+      background: white;
+      transition: all 0.3s ease;
+      color: #333;
+    }
+
+    .form-group input::placeholder {
+      color: #999;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus {
+      outline: none;
+      border-color: #1a8f5a;
+      box-shadow: 0 0 0 3px rgba(26, 143, 90, 0.1);
+    }
+
+    .form-group select {
+      cursor: pointer;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23333' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 18px center;
+      padding-right: 45px;
+    }
+
+    .input-wrapper {
+      position: relative;
+    }
+
+    .toggle-password {
+      position: absolute;
+      right: 18px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 5px;
+      color: #666;
+    }
+
+    .toggle-password svg {
+      width: 22px;
+      height: 22px;
+      display: block;
+      stroke-width: 2;
+    }
+    
+    .toggle-password:hover {
+      color: #1a8f5a;
+    }
+
+    .buttons {
+      display: flex;
+      gap: 15px;
+      margin-top: 30px;
+      margin-bottom: 20px;
+    }
+
+    .btn {
+      flex: 1;
+      padding: 14px 24px;
+      border: none;
+      border-radius: 25px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .btn-primary {
+      background: #1a8f5a;
+      color: white;
+      box-shadow: 0 4px 12px rgba(26, 143, 90, 0.3);
+    }
+
+    .btn-primary:hover {
+      background: #157a4d;
+      transform: translateY(-1px);
+      box-shadow: 0 6px 16px rgba(26, 143, 90, 0.4);
+    }
+
+    .btn-primary:disabled {
+      background: #a0c9b5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: #1a8f5a;
+      border: 2px solid #d0d0d0;
+    }
+
+    .btn-secondary:hover {
+      background: #f5f5f5;
+      border-color: #1a8f5a;
+    }
+
+    .login-link {
+      text-align: center;
+      font-size: 13px;
+      color: #666;
+    }
+
+    .login-link a {
+      color: #1a8f5a;
+      font-weight: 600;
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+
+    .login-link a:hover {
+      color: #157a4d;
+      text-decoration: underline;
+    }
+
+    .mensagem {
+      margin-top: 15px;
+      padding: 12px 18px;
+      border-radius: 15px;
+      text-align: center;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .mensagem-sucesso {
+      background: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
+
+    .mensagem-erro {
+      background: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    @media (max-width: 500px) {
+      .form-card {
+        padding: 30px 25px;
+      }
+
+      .intro h1 {
+        font-size: 24px;
+      }
+    }
+  </style>
 </head>
 <body>
-<div class="container">
-    <h2>Cadastro NutriAI</h2>
-    <form method="POST" action="/register">
-        <input type="text" name="first_name" placeholder="Nome" required>
-        <input type="text" name="last_name" placeholder="Sobrenome" required>
-        <input type="date" name="birth_date" placeholder="Data de Nascimento" required>
-        <select name="gender" required>
-            <option value="">Gênero</option>
-            <option value="masculino">Masculino</option>
-            <option value="feminino">Feminino</option>
-            <option value="outro">Outro</option>
-        </select>
-        <input type="email" name="email" placeholder="E-mail" required>
-        <input type="password" name="password" placeholder="Senha" required>
-        <button type="submit">Cadastrar</button>
-    </form>
-    <p>Já tem conta? <a href="/login">Entre aqui</a></p>
-</div>
+  <div class="cadastro-container">
+    <section class="intro">
+      <h1>Bem-vindo(a) ao NutriNow!</h1>
+      <p>Sua jornada para uma vida mais saudável começa aqui. Preencha seus dados abaixo para criar sua conta.</p>
+    </section>
+
+    <div class="form-card">
+      <form id="formCadastro">
+        <div class="form-group">
+          <label for="nome">Nome</label>
+          <input type="text" id="nome" placeholder="Nome" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="sobrenome">Sobrenome</label>
+          <input type="text" id="sobrenome" placeholder="Sobrenome" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="dataNascimento">Data de nascimento</label>
+          <input type="date" id="dataNascimento" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="genero">Gênero</label>
+          <select id="genero" required>
+            <option value="">Selecione o seu gênero</option>
+            <option value="M">Masculino</option>
+            <option value="F">Feminino</option>
+            <option value="NB">Não-binário</option>
+            <option value="O">Prefiro não informar</option>
+          </select>
+        </div>
+
+        
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input type="email" id="email" placeholder="Digite seu email" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="senha">Senha</label>
+          <div class="input-wrapper">
+            <input type="password" id="senha" placeholder="Crie uma senha" required minlength="6">
+            <button type="button" class="toggle-password" id="togglePassword" aria-label="Mostrar/ocultar senha">
+              <svg id="eyeIcon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path id="eyePath1" stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                <path id="eyePath2" stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7Z" />
+                <path id="eyeSlash" class="hidden" stroke-linecap="round" stroke-linejoin="round" d="M3 3l18 18" />
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="buttons">
+          <button type="submit" class="btn btn-primary">Criar Conta</button>
+          <button type="button" class="btn btn-secondary" onclick="voltar()">Voltar</button>
+        </div>
+
+        <p class="login-link">
+          Já possui uma conta? <a href="#" onclick="navegarLogin(); return false;">Entrar agora</a>
+        </p>
+      </form>
+
+      <div id="mensagemSucesso" class="mensagem mensagem-sucesso hidden"></div>
+      <div id="mensagemErro" class="mensagem mensagem-erro hidden"></div>
+    </div>
+  </div>
+
+  <script>
+    const form = document.getElementById('formCadastro');
+    const togglePasswordBtn = document.getElementById('togglePassword');
+    const senhaInput = document.getElementById('senha');
+    const eyeSlash = document.getElementById('eyeSlash');
+    const mensagemSucesso = document.getElementById('mensagemSucesso');
+    const mensagemErro = document.getElementById('mensagemErro');
+
+    // Toggle senha
+    togglePasswordBtn.addEventListener('click', () => {
+      const tipo = senhaInput.type === 'password' ? 'text' : 'password';
+      senhaInput.type = tipo;
+      eyeSlash.classList.toggle('hidden');
+    });
+
+    // Submeter formulário
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      // Limpar mensagens anteriores
+      mensagemErro.classList.add('hidden');
+      mensagemSucesso.classList.add('hidden');
+      
+      const formData = new FormData();
+      formData.append('first_name', document.getElementById('nome').value);
+      formData.append('last_name', document.getElementById('sobrenome').value);
+      formData.append('birth_date', document.getElementById('dataNascimento').value);
+      formData.append('gender', document.getElementById('genero').value);
+      formData.append('email', document.getElementById('email').value);
+      formData.append('password', document.getElementById('senha').value);
+
+      try {
+        const response = await fetch('/register', {
+          method: 'POST',
+          body: formData
+        });
+
+        if (response.ok) {
+          mensagemSucesso.classList.remove('hidden');
+          mensagemSucesso.textContent = 'Conta criada com sucesso! Redirecionando...';
+          
+          setTimeout(() => {
+            window.location.href = '/login';
+          }, 2000);
+        } else {
+          const data = await response.text();
+          mensagemErro.classList.remove('hidden');
+          mensagemErro.textContent = 'Erro ao criar conta. Tente novamente.';
+        }
+      } catch (error) {
+        console.error('Erro:', error);
+        mensagemErro.classList.remove('hidden');
+        mensagemErro.textContent = 'Erro de conexão. Verifique sua internet.';
+      }
+    });
+
+    function voltar() {
+      window.history.back();
+    }
+
+    function navegarLogin() {
+      window.location.href = '/login';
+    }
+  </script>
 </body>
 </html>

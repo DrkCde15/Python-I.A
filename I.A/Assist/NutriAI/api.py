@@ -37,7 +37,7 @@ def get_db_connection():
         host=os.getenv('MYSQL_HOST', 'localhost'),
         user=os.getenv('MYSQL_USER', 'root'),
         password=os.getenv('MYSQL_PASSWORD', ''),
-        database=os.getenv('MYSQL_DATABASE', 'nutri_chat_teste')
+        database=os.getenv('MYSQL_DATABASE', 'nutri_chat')
     )
 
 # Pasta para uploads
@@ -45,6 +45,9 @@ UPLOAD_FOLDER = r"C:\Users\Júlio César\Pictures\Uploads"
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 # ---------------- ROTAS DE AUTENTICAÇÃO ----------------
+@app.route('/')
+def render_home():
+    return render_template("home.html")
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
