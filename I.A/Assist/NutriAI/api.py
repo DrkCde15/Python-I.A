@@ -49,8 +49,8 @@ os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 def render_home():
     return render_template("home.html")
 
-@app.route("/register", methods=["GET", "POST"])
-def register():
+@app.route("/cadastro", methods=["GET", "POST"])
+def cadastro():
     if request.method == "POST":
         first_name = request.form.get("first_name")
         last_name = request.form.get("last_name")
@@ -61,7 +61,7 @@ def register():
 
         if not all([first_name, last_name, birth_date, gender, email, password]):
             flash("Preencha todos os campos!", "error")
-            return redirect(url_for("register"))
+            return redirect(url_for("cadastro"))
 
         hashed_password = generate_password_hash(password)
 
@@ -71,7 +71,7 @@ def register():
             cursor.execute("SELECT id FROM users WHERE email=%s", (email,))
             if cursor.fetchone():
                 flash("E-mail já cadastrado!", "error")
-                return redirect(url_for("register"))
+                return redirect(url_for("cadastro"))
 
             cursor.execute("""
                 INSERT INTO users (first_name, last_name, birth_date, gender, email, password)
@@ -83,7 +83,7 @@ def register():
         finally:
             cursor.close()
             conn.close()
-    return render_template("register.html")
+    return render_template("cadastro.html")
 
 @app.route("/login", methods=["GET", "POST"])
 def login():

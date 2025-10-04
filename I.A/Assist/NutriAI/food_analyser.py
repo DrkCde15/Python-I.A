@@ -19,10 +19,12 @@ class FoodAnalyser(BaseTool):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+        # CORREÇÃO CRÍTICA: Aumentar max_output_tokens e desabilitar thinking
         self._llm = ChatGoogleGenerativeAI(
-            model='gemini-2.5-flash',
+            model='gemini-2.0-flash',  # Versão mais estável
             temperature=0.7,
-            max_tokens=2048
+            max_output_tokens=4096,  # Aumentado significativamente
+            max_tokens=None,  # Remove limite de tokens totais
         )
 
     # ----------------- Implementação obrigatória BaseTool -----------------
@@ -66,39 +68,40 @@ class FoodAnalyser(BaseTool):
             return base64.b64encode(buffered.getvalue()).decode("utf-8")
 
     def _create_analysis_prompt(self) -> str:
-        return '''
-Você é uma nutricionista especializada em nutrição esportiva. Analise a imagem da refeição e forneça
-uma tabela nutricional em Markdown seguindo este formato:
+        return '''Analise esta imagem de refeição e forneça DIRETAMENTE a resposta neste formato:
 
 | Nutriente | Quantidade | % VD* |
 |-----------|------------|-------|
-| Calorias | ... | ... |
-| Carboidratos | ... | ... |
-| Proteínas | ... | ... |
-| Gorduras Totais | ... | ... |
-| Gorduras Saturadas | ... | ... |
-| Fibras | ... | ... |
-| Sódio | ... | ... |
+| Calorias | X kcal | X% |
+| Carboidratos | X g | X% |
+| Proteínas | X g | X% |
+| Gorduras Totais | X g | X% |
+| Gorduras Saturadas | X g | X% |
+| Fibras | X g | X% |
+| Sódio | X mg | X% |
 
-*VD = Valores Diários de referência baseados em uma dieta de 2.000 kcal
+*VD = Valores Diários (dieta de 2.000 kcal)
 
-Após a tabela, inclua:
-1. **Avaliação Geral**: Qualidade nutricional da refeição (Excelente/Boa/Regular/Precisa melhorar)
-2. **Pontos Positivos**: O que está bom na refeição
-3. **Sugestões de Melhoria**: 2-3 dicas práticas e objetivas
+**Avaliação**: [Excelente/Boa/Regular/Precisa melhorar]
 
-Seja clara, objetiva e use linguagem acessível.
-'''
+**Pontos Positivos**:
+- [ponto 1]
+- [ponto 2]
+
+**Sugestões**:
+- [sugestão 1]
+- [sugestão 2]
+
+IMPORTANTE: Responda DIRETAMENTE com a tabela. Não faça raciocínio interno extenso.'''
 
     def _extract_content_from_response(self, response) -> str:
         """Extrai o conteúdo de texto do objeto AIMessage de forma robusta"""
         try:
-            # Método 1: Atributo content (mais comum)
-            if hasattr(response, 'content') and response.content:
-                if isinstance(response.content, str):
-                    return response.content
+            # Método 1: Atributo content direto
+            if hasattr(response, 'content'):
+                if isinstance(response.content, str) and response.content.strip():
+                    return response.content.strip()
                 elif isinstance(response.content, list):
-                    # Às vezes o content é uma lista de dicts
                     text_parts = []
                     for item in response.content:
                         if isinstance(item, dict) and 'text' in item:
@@ -106,29 +109,27 @@ Seja clara, objetiva e use linguagem acessível.
                         elif isinstance(item, str):
                             text_parts.append(item)
                     if text_parts:
-                        return ' '.join(text_parts)
+                        return ' '.join(text_parts).strip()
             
-            # Método 2: Conversão direta para string
-            if hasattr(response, '__str__'):
-                content_str = str(response)
-                # Remove metadados se presentes
-                if 'content=' in content_str:
-                    # Extrai apenas o conteúdo útil
-                    start = content_str.find("content='") + 9
-                    end = content_str.find("', additional_kwargs")
-                    if start > 8 and end > start:
-                        return content_str[start:end]
+            # Método 2: Tentar extrair de diferentes atributos
+            for attr in ['text', 'output', 'output_text', 'result']:
+                if hasattr(response, attr):
+                    content = getattr(response, attr)
+                    if isinstance(content, str) and content.strip():
+                        return content.strip()
             
-            # Método 3: Tentar acessar diretamente como dict
-            if isinstance(response, dict) and 'content' in response:
-                return str(response['content'])
+            # Método 3: Se for um dict
+            if isinstance(response, dict):
+                for key in ['content', 'text', 'output']:
+                    if key in response and response[key]:
+                        return str(response[key]).strip()
             
-            # Se tudo falhar, retorna representação em string
-            return str(response)
+            # Se chegou aqui, o content está vazio
+            return ""
             
         except Exception as e:
             print(f"Erro ao extrair conteúdo: {e}")
-            return f"Erro ao processar resposta: {str(e)}"
+            return ""
 
     def _analyze_image(self, image_path: str) -> str:
         """Análise completa retornando apenas a tabela + dicas"""
@@ -137,19 +138,78 @@ Seja clara, objetiva e use linguagem acessível.
 
             system_message = SystemMessage(content=self._create_analysis_prompt())
             human_message = HumanMessage(content=[
-                {'type': 'text', 'text': 'Analise esta imagem de refeição e retorne a tabela nutricional completa com avaliação e dicas:'},
-                {'type': 'image_url', 'image_url': {'url': f"data:image/jpeg;base64,{img_b64}", 'detail': 'high'}}
+                {
+                    'type': 'text', 
+                    'text': 'Você é uma nutricionista. Analise esta refeição e forneça a tabela nutricional DIRETAMENTE, sem raciocínio interno extenso:'
+                },
+                {
+                    'type': 'image_url', 
+                    'image_url': {
+                        'url': f"data:image/jpeg;base64,{img_b64}",
+                        'detail': 'high'
+                    }
+                }
             ])
 
-            # Invoca o modelo
-            response = self._llm.invoke([system_message, human_message])
+            # Invoca o modelo com configuração otimizada
+            response = self._llm.invoke(
+                [system_message, human_message],
+                config={
+                    'max_output_tokens': 4096,
+                    'temperature': 0.7,
+                }
+            )
             
-            # Extrai o conteúdo de forma robusta
+            # Debug: mostra o que foi recebido
+            print(f"\n🔍 DEBUG - Resposta recebida:")
+            print(f"Tipo: {type(response)}")
+            print(f"Atributos: {dir(response)}")
+            if hasattr(response, 'response_metadata'):
+                print(f"Metadata: {response.response_metadata}")
+            if hasattr(response, 'usage_metadata'):
+                print(f"Usage: {response.usage_metadata}")
+            
+            # Extrai o conteúdo
             tabela_texto = self._extract_content_from_response(response)
             
-            # Verifica se conseguiu extrair conteúdo válido
+            # Verifica se o content está vazio (problema MAX_TOKENS em reasoning)
             if not tabela_texto or len(tabela_texto) < 50:
-                return f"Erro: Resposta vazia ou inválida do modelo. Resposta recebida: {str(response)[:200]}"
+                # Tenta uma segunda chamada com prompt mais direto
+                print("Conteúdo vazio, tentando com prompt simplificado...")
+                
+                simple_message = HumanMessage(content=[
+                    {
+                        'type': 'text',
+                        'text': 'Liste os alimentos visíveis e estime calorias, proteínas, carboidratos e gorduras em formato de tabela markdown.'
+                    },
+                    {
+                        'type': 'image_url',
+                        'image_url': {
+                            'url': f"data:image/jpeg;base64,{img_b64}",
+                            'detail': 'low'  # Reduz processamento
+                        }
+                    }
+                ])
+                
+                response = self._llm.invoke([simple_message])
+                tabela_texto = self._extract_content_from_response(response)
+                
+                if not tabela_texto or len(tabela_texto) < 50:
+                    return f"""**Erro: Resposta vazia do modelo**
+
+O modelo está consumindo todos os tokens em raciocínio interno e não gerando saída.
+
+**Detalhes técnicos**:
+- finish_reason: {response.response_metadata.get('finish_reason', 'unknown')}
+- output_tokens: {response.usage_metadata.get('output_tokens', 0) if hasattr(response, 'usage_metadata') else 'N/A'}
+- reasoning_tokens: {response.usage_metadata.get('output_token_details', {}).get('reasoning', 0) if hasattr(response, 'usage_metadata') else 'N/A'}
+
+**Soluções**:
+
+2. Aumente `max_output_tokens` para 8192
+3. Simplifique a imagem ou reduza o prompt
+
+**Resposta bruta**: {str(response)[:300]}"""
             
             # Formata o resultado final
             result_text = f"""ANÁLISE NUTRICIONAL DA REFEIÇÃO
@@ -158,7 +218,7 @@ _Imagem: {os.path.basename(image_path)}_
 {tabela_texto}
 
 ---
-💡 **Dica da Nutricionista**: Para análises mais precisas, inclua informações sobre suas características (peso, altura, objetivos) e nível de atividade física!"""
+**Dica da Nutricionista**: Para análises mais precisas, inclua informações sobre suas características (peso, altura, objetivos) e nível de atividade física!"""
 
             return result_text
 
@@ -169,13 +229,14 @@ _Imagem: {os.path.basename(image_path)}_
 
 **Erro técnico**: {str(e)}
 
-**Possíveis causas**:
-- Formato de imagem não suportado
-- Arquivo corrompido ou muito grande
+**Traceback**:
+```
+{error_details[:500]}
+```
 
 **Sugestões**:
-1. Verifique se a imagem está em formato válido (JPG, PNG, WEBP)
-2. Tente com uma imagem menor (< 5MB)"""
+1. Verifique a API key do Google
+2. Teste com uma imagem menor"""
 
     # ----------------- Interface pública -----------------
     def analyze_food_image(self, image_path: str) -> str:
@@ -193,7 +254,7 @@ class BatchFoodAnalyser:
         self.analyser = FoodAnalyser()
 
     def analyze_multiple_images(self, image_paths: list) -> list:
-        """Analisa múltiplas imagens e retorna lista de resultados (tabela + dicas)"""
+        """Analisa múltiplas imagens e retorna lista de resultados"""
         results = []
         for i, path in enumerate(image_paths, 1):
             print(f"Analisando imagem {i}/{len(image_paths)}: {os.path.basename(path)}")
@@ -206,10 +267,10 @@ class BatchFoodAnalyser:
         return results
 
     def create_summary_report(self, results: list) -> str:
-        """Cria relatório final com todas as tabelas em sequência"""
-        report = f"""# 📊 RELATÓRIO DE ANÁLISES NUTRICIONAIS
+        """Cria relatório final com todas as análises"""
+        report = f"""# RELATÓRIO DE ANÁLISES NUTRICIONAIS
 
-**Total de imagens analisadas**: {len(results)}
+**Total de imagens**: {len(results)}
 **Data**: {datetime.now().strftime('%d/%m/%Y %H:%M')}
 
 ---
@@ -227,6 +288,5 @@ class BatchFoodAnalyser:
 
 """
         
-        report += "\n\n**Observação Final**: Este relatório é baseado em estimativas visuais e não substitui a consulta com um nutricionista profissional."
-        
+        report += "\n**Observação**: Estimativas baseadas em análise visual. Consulte um nutricionista para orientação personalizada."
         return report
