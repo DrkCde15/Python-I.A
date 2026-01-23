@@ -21,17 +21,17 @@ def extrair_conteudo_avancado(url):
             return texto[:8000] # Limite para a IA
         return None
     except Exception as e:
-        print(f"   ⚠️ Erro técnico no site: {e}")
+        print(f"Erro técnico no site: {e}")
         return None
 
 def realizar_pesquisa_robusta():
-    print("\n=== AGENTE DE PESQUISA AVANÇADO (ANTI-BLOQUEIO) ===")
-    tema = input("🔍 Qual o tema da pesquisa? ")
+    print("\n=== AGENTE DE PESQUISA AVANÇADO ===")
+    tema = input("Qual o tema da pesquisa? ")
     
     dados_finais = {}
     
     with DDGS() as ddgs:
-        print(f"🚀 Vasculhando a web por '{tema}'...")
+        print(f"Vasculhando a web por '{tema}'...")
         buscas = list(ddgs.text(f"{tema} artigo", region='pt-br', max_results=5))
 
     for i, res in enumerate(buscas, 1):
@@ -41,7 +41,7 @@ def realizar_pesquisa_robusta():
         texto_util = extrair_conteudo_avancado(url)
         
         if texto_util:
-            print("   ✅ Conteúdo extraído! Consultando Gemini...")
+            print("Conteúdo extraído! Consultando Gemini...")
             
             # SISTEMA DE RETRY (ESPERA) PARA EVITAR ERRO 429
             sucesso_ia = False
@@ -56,19 +56,19 @@ def realizar_pesquisa_robusta():
                     time.sleep(10) 
                 except Exception as e:
                     if "429" in str(e):
-                        print("   ⏳ Cota atingida. Aguardando 25 segundos para tentar novamente...")
+                        print("Cota atingida. Aguardando 25 segundos para tentar novamente...")
                         time.sleep(25)
                         tentativas += 1
                     else:
-                        print(f"   ❌ Erro inesperado: {e}")
+                        print(f"Erro inesperado: {e}")
                         break
         else:
-            print("   🛡️ Site protegido ou sem texto relevante.")
+            print("Site protegido ou sem texto relevante.")
 
     if dados_finais:
         gerar_pdf_final(tema, dados_finais)
     else:
-        print("\n💔 Nenhum dado foi processado devido aos limites da API.")
+        print("\nNenhum dado foi processado devido aos limites da API.")
 
 def gerar_pdf_final(tema, dados):
     pdf = FPDF()
@@ -88,7 +88,7 @@ def gerar_pdf_final(tema, dados):
         pdf.ln(10)
 
     pdf.output(f"Relatorio_{tema.replace(' ', '_')}.pdf")
-    print(f"\n✨ SUCESSO! O arquivo PDF foi gerado.")
+    print(f"\nPDF gerado.")
 
 if __name__ == "__main__":
     realizar_pesquisa_robusta()
