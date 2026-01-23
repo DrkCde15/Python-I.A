@@ -1,0 +1,6 @@
+google-genai
+python-dotenv
+duckduckgo-search
+trafilatura
+fpdf
+requests
