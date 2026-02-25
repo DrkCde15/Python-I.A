@@ -1,0 +1,10 @@
+@import '../esqueci-senha/esqueci-senha.component.css';
+
+
+
+/* Pequena diferença opcional no título */
+.login-card h1 {
+  margin-bottom: 15px;
+  color: #333;
+  font-weight: 600;
+}

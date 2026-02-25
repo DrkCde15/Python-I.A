@@ -1,0 +1,86 @@
+<div class="nutri-layout">
+  <div class="nutri-card">
+    <!-- Cabeçalho -->
+    <div class="nutri-header">
+      <div>
+        <h1 class="nutri-title">Rotina de Treinos e Dietas</h1>
+        <p class="nutri-subtitle">Gerencie seus treinos e refeições</p>
+      </div>
+    </div>
+
+    <!-- Abas -->
+    <div class="nutri-tabs">
+      <button
+        class="nutri-tab"
+        [class.active]="activeTab === 'treinos'"
+        (click)="switchTab('treinos')">
+        <span class="icon">💪</span> Treinos
+      </button>
+
+      <button
+        class="nutri-tab"
+        [class.active]="activeTab === 'dietas'"
+        (click)="switchTab('dietas')">
+        <span class="icon">🍽️</span> Dietas
+      </button>
+    </div>
+
+    <!-- Botão adicionar -->
+    <button class="nutri-add-btn" (click)="openModal()">
+      <span class="icon">＋</span> {{ addButtonText }}
+    </button>
+
+    <!-- Lista -->
+    <div *ngIf="currentItems.length > 0; else vazio" class="nutri-list">
+      <div class="nutri-item" *ngFor="let item of currentItems">
+        <div class="nutri-item-info">
+          <h3 class="nutri-item-title">{{ item.title }}</h3>
+          <p class="nutri-item-description">{{ item.description }}</p>
+
+          <div *ngIf="item.time" class="nutri-item-time">
+            <span class="icon">🕐</span> {{ item.time }}
+          </div>
+        </div>
+
+        <div class="nutri-item-actions">
+          <button class="nutri-btn-icon" (click)="editItem(item)">✏️</button>
+          <button class="nutri-btn-icon" (click)="deleteItem(item.id)">🗑️</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Estado vazio -->
+    <ng-template #vazio>
+      <div class="nutri-empty">{{ emptyText }}</div>
+    </ng-template>
+  </div>
+
+  <!-- Modal -->
+  <div class="nutri-modal" [class.show]="mostrarModal" (click)="closeModal()">
+    <div class="nutri-modal-content" (click)="$event.stopPropagation()">
+      <div class="nutri-modal-header">
+        <h2>{{ modalTitle }}</h2>
+        <button class="nutri-close-btn" (click)="closeModal()">✖️</button>
+      </div>
+
+      <div class="nutri-modal-body">
+        <div class="nutri-form-group">
+          <label>Título</label>
+          <input [(ngModel)]="inputTitle" placeholder="Ex: Treino de Peito ou Café da Manhã" />
+        </div>
+
+        <div class="nutri-form-group">
+          <label>Descrição</label>
+          <textarea [(ngModel)]="inputDescription" placeholder="Ex: 3x12 supino... ou Aveia e Banana"></textarea>
+        </div>
+
+        <div class="nutri-form-group">
+          <label>Horário (opcional)</label>
+          <input type="time" [(ngModel)]="inputTime" />
+        </div>
+
+        <button class="nutri-submit-btn" (click)="handleSubmit()">{{ buttonText }}</button>
+      </div>
+    </div>
+  </div>
+</div>

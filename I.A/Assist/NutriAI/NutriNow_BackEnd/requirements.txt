@@ -1,0 +1,11 @@
+mysql-connector-python
+python-dotenv
+langchain
+langchain-google-genai
+langchain-community
+langchain-core
+pydantic
+Pillow
+Flask
+Flask-Cors
+Werkzeug

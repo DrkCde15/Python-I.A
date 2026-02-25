@@ -1,0 +1,341 @@
+/* Reset */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+
+
+/* Container principal */
+.cadastro-container {
+  font-family: 'Arial', sans-serif;
+  min-height: 100vh;
+  background: linear-gradient(135deg, hsl(168, 85%, 36%) 0%, hsl(142, 76%, 36%) 100%);
+  display: flex;
+  flex-direction: column;
+}
+
+/* Header */
+.cadastro-header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 300px;
+  padding: 20px 0;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border-radius: 12px;
+}
+
+/* Logo */
+.cadastro-header .logo img {
+  width: 80px;
+  height: auto;
+}
+
+/* Logo com animação */
+.logo a img {
+  transition: transform 0.3s ease;
+}
+
+.logo a:hover img {
+  transform: scale(1.1) rotate(-0deg);
+}
+
+
+/* Menu links */
+.cadastro-header .menu-btn {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 90px;
+  height: 40px;
+  background-color: #fff;
+  color: #2563eb; /* mesmo azul do .nav-btn */
+  font-weight: 600;
+  font-size: 15px;
+  border: none;
+  border-radius: 40px; /* mesmo arredondamento */
+  text-decoration: none;
+  text-align: center;
+  cursor: pointer;
+  overflow: visible;
+  z-index: 0;
+  transition: transform 0.25s ease, background-color 0.25s ease, box-shadow 0.25s ease;
+  will-change: transform, box-shadow;
+} 
+
+/* Efeito de brilho passando */
+.cadastro-header .menu-btn::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -75%;
+  width: 50%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0);
+  transform: skewX(-20deg);
+  transition: left 0.4s ease;
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* Hover com animação */
+.cadastro-header .menu-btn:hover {
+  background-color: #2563eb;
+  color: #fff;
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.35);
+}
+
+/* Move o brilho pro outro lado quando hover */
+.cadastro-header .menu-btn:hover::before {
+  left: 130%;
+  background: rgba(255, 255, 255, 0); /* aparece só durante hover */
+}
+
+/* .cadastro-header .menu-btn:hover {
+  background-color: #e0f7f4;
+  transform: translateY(-3px);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+} */
+
+/* Botão de perfil */
+.cadastro-header .icon-btn {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #ffffff;
+  color: #059669;
+  font-size: 24px;
+  cursor: pointer;
+  border: none;
+  transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+}
+
+ .cadastro-header .icon-btn:hover {
+ transform: scale(1.05);
+  box-shadow: 0 6px 15px rgba(0,0,0,0.2);
+} 
+
+
+.cadastro-header .perfil img {
+  width: 40px;
+  height: 40px;
+}
+
+/* Introdução */
+.intro {
+  text-align: center;
+  margin: 50px 20px 30px 20px;
+  color: #fff;
+}
+
+.intro h1 {
+  font-size: 36px;
+  margin-bottom: 10px;
+}
+
+.intro h1 span {
+  color: #a5f3fc;
+}
+
+.intro p {
+  font-size: 18px;
+  color: #d1faf8;
+}
+
+/* Formulário */
+.form-section {
+  display: flex;
+  justify-content: center;
+  padding: 20px;
+}
+
+.cadastro-form input {
+  width: 95%;
+  padding: 12px 15px;
+  border: 1px solid #14b8a6;
+  border-radius: 30px;
+  font-size: 16px;
+}
+
+.cadastro-form {
+  background: rgba(255,255,255,0.95);
+  color: #333;
+  padding: 30px;
+  border-radius: 30px;
+  max-width: 500px;
+  width: 100%;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 15px;
+}
+
+.input-group label {
+  margin-bottom: 6px;
+  font-weight: 600;
+}
+
+.input-group input,
+.input-group select {
+  width: 100%;
+  padding: 10px 14px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 16px;
+  transition: border 0.2s;
+}
+
+.input-group input:focus,
+.input-group select:focus {
+  border-color: #14b8a6;
+  outline: none;
+}
+
+/* Botões */
+.buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.btn-primary {
+  background-color: #14b8a6;
+  color: #fff;
+  padding: 12px 25px;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-primary:hover {
+  background-color: #0f766e;
+}
+
+.btn-secondary {
+  background-color: #e0f7f4;
+  color: #0f766e;
+  padding: 12px 25px;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-secondary:hover {
+  background-color: #c7f0ed;
+}
+
+/* Mensagens */
+.mensagem-sucesso,
+.mensagem-erro {
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-weight: 600;
+  margin-top: 15px;
+  text-align: center;
+  animation: fadeIn 0.4s ease-in;
+}
+
+.mensagem-sucesso {
+  background-color: rgba(22, 163, 74, 0.15);
+  color: #14532d;
+}
+
+.mensagem-erro {
+  background-color: rgba(220, 38, 38, 0.15);
+  color: #7f1d1d;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+
+/* Link de login */
+.login-link {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.login-link a {
+  color: #14b8a6;
+  font-weight: 600;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.login-link a:hover {
+  color: #0f766e;
+}
+
+.input-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.input-wrapper input {
+  width: 95%;
+  border-radius: 20px;
+}
+
+.toggle-btn {
+  position: absolute;
+  top: 70%;
+  right: 40px;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.icon {
+  width: 22px;
+  height: 22px;
+  color: rgba(0, 0, 0, 0.5);
+}
+
+/* ===== Validação de campos ===== */
+
+/* Mensagem de erro dos campos obrigatórios */
+.erro {
+  color: #dc2626; /* vermelho consistente com seu esquema */
+  font-size: 14px;
+  margin-left: 12px;
+  margin-top: 4px;
+  font-weight: 500;
+  animation: fadeIn 0.3s ease-in;
+}
+
+/* Destaque do campo inválido */
+input.ng-invalid.ng-touched,
+select.ng-invalid.ng-touched {
+  border: 2px solid #dc2626;
+  background-color: #fef2f2; /* leve tom rosado */
+  transition: border 0.2s, background-color 0.2s;
+}
+
+/* Quando o campo voltar a ser válido */
+input.ng-valid.ng-touched,
+select.ng-valid.ng-touched {
+  border: 2px solid #16a34a; /* verde */
+  background-color: #f0fdf4;
+}

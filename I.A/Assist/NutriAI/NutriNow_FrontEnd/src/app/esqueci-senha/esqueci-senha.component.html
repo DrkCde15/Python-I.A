@@ -1,0 +1,32 @@
+<div class="login-container">
+  
+
+  <main class="login-card">
+    <h1>Esqueci minha senha</h1>
+    <p>Informe seu email abaixo e enviaremos um link para redefinir sua senha.</p>
+
+    <form class="login-form" (ngSubmit)="esqueciSenha()" #form="ngForm">
+      <div class="input-group">
+        <i class="material-symbols-outlined">email</i>
+        <input 
+          type="email" 
+          placeholder="Email" 
+          [(ngModel)]="email" 
+          name="email" 
+          required 
+        />
+      </div>
+
+      <button type="submit" class="btn-primary" [disabled]="form.invalid">
+        Enviar link de redefinição
+      </button>
+
+      <button type="button" class="btn-secondary" routerLink="/login">
+        Voltar para login
+      </button>
+    </form>
+
+    <p *ngIf="mensagem" class="mensagem-sucesso">{{ mensagem }}</p>
+    <p *ngIf="erro" class="mensagem-erro">{{ erro }}</p>
+  </main>
+</div>

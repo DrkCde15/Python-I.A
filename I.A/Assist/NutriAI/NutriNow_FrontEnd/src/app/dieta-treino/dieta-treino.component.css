@@ -1,0 +1,280 @@
+/* ===== Layout base ===== */
+.nutri-layout {
+  min-height: 100vh;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #00c58e, #00b0b8);
+  font-family: "Inter", sans-serif;
+  color: #fff;
+}
+
+/* ===== Card principal ===== */
+.nutri-card {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(16px);
+  border-radius: 24px;
+  padding: 40px 50px;
+  width: 90%;
+  max-width: 720px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+/* ===== Cabeçalho ===== */
+.nutri-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.nutri-header-icon {
+  font-size: 28px;
+}
+
+.nutri-title {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #fff;
+  margin: 0;
+}
+
+.nutri-subtitle {
+  font-size: 0.95rem;
+  color: #e0f6f0;
+  margin-top: 4px;
+}
+
+/* ===== Tabs ===== */
+.nutri-tabs {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin: 25px 0;
+}
+
+.nutri-tab {
+  flex: 1;
+  padding: 10px 0;
+  border: none;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.2);
+  color: #fff;
+  font-weight: 500;
+  cursor: pointer;
+  transition: 0.25s ease;
+  font-size: 1rem;
+}
+
+.nutri-tab:hover {
+  background: rgba(255, 255, 255, 0.35);
+}
+
+.nutri-tab.active {
+  background: #fff;
+  color: #00b07a;
+  font-weight: 600;
+}
+
+/* ===== Botão adicionar ===== */
+.nutri-add-btn {
+  width: 100%;
+  background: #fff;
+  color: #00b07a;
+  border: none;
+  border-radius: 12px;
+  padding: 12px 0;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: 0.3s ease;
+}
+
+.nutri-add-btn:hover {
+  background: #f3f3f3;
+  transform: scale(1.02);
+}
+
+/* ===== Lista ===== */
+.nutri-list {
+  margin-top: 25px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.nutri-item {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 16px;
+  padding: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  text-align: left;
+  transition: 0.25s ease;
+}
+
+.nutri-item:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.nutri-item-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 6px;
+  color: #fff;
+}
+
+.nutri-item-description {
+  color: #e8f6f1;
+  font-size: 0.9rem;
+  margin-bottom: 8px;
+}
+
+.nutri-item-time {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: #d6f4ea;
+  font-size: 0.9rem;
+}
+
+.nutri-item-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.nutri-btn-icon {
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.nutri-btn-icon:hover {
+  transform: scale(1.2);
+  color: #ffe;
+}
+
+/* ===== Estado vazio ===== */
+.nutri-empty {
+  margin-top: 30px;
+  color: #eafaf4;
+  font-size: 0.95rem;
+}
+
+/* ===== Modal ===== */
+.nutri-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+}
+
+.nutri-modal.show {
+  display: flex;
+}
+
+.nutri-modal-content {
+  background: #fff;
+  color: #333;
+  border-radius: 20px;
+  padding: 30px 35px;
+  width: 90%;
+  max-width: 420px;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.2);
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    transform: translateY(10px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* ===== Modal Header ===== */
+.nutri-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.nutri-close-btn {
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+  color: #555;
+}
+
+/* ===== Modal Body ===== */
+.nutri-form-group {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  margin-bottom: 15px;
+}
+
+.nutri-form-group label {
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: #444;
+  margin-bottom: 6px;
+}
+
+.nutri-form-group input,
+.nutri-form-group textarea {
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  padding: 10px;
+  font-size: 0.95rem;
+  resize: none;
+  outline: none;
+}
+
+.nutri-submit-btn {
+  width: 100%;
+  background: #00b07a;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 12px 0;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.25s ease;
+}
+
+.nutri-submit-btn:hover {
+  background: #009667;
+}
+
+/* ===== Responsividade ===== */
+@media (max-width: 600px) {
+  .nutri-card {
+    padding: 30px 25px;
+  }
+
+  .nutri-tabs {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .nutri-add-btn {
+    font-size: 0.95rem;
+  }
+}

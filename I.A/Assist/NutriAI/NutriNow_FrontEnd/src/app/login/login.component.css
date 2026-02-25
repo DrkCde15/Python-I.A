@@ -1,0 +1,194 @@
+/* Reset */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+
+/* Container principal */
+.login-container {
+  width: 100%;
+  max-width: 1500px;
+  padding: 20px;
+}
+
+/* Header */
+.login-header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 70px;
+  margin-bottom: 40px;
+}
+
+
+/* Menu */
+.menu {
+  display: flex;
+  gap: 20px;
+}
+
+/* Estilo para links do menu */
+
+
+/* Card de login */
+.login-card {
+  background: rgba(255, 255, 255, 0.95);
+  padding: 40px;
+  border-radius: 20px;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+  max-width: 400px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.login-card h1 {
+  margin-bottom: 20px;
+  color: #333;
+}
+
+/* Botões sociais */
+.btn-social {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 12px;
+  border-radius: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s;
+  background: #fff;
+  border: 1px solid #ddd;
+}
+
+.btn-social.google i { color: #ea4335; }
+.btn-social.facebook i { color: #1877f2; }
+
+.btn-social:hover {
+  background: #f9f9f9;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+/* Divisor */
+.divider {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  margin: 20px 0;
+  color: #777;
+}
+
+.divider::before, .divider::after {
+  content: '';
+  flex: 1;
+  border-bottom: 1px solid #ddd;
+}
+
+.divider span {
+  margin: 0 10px;
+}
+
+/* Inputs */
+.input-group {
+  display: flex;
+  align-items: center;
+  background: #f9fafb;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  padding: 12px;
+  margin-bottom: 15px;
+  transition: border 0.3s, box-shadow 0.3s;
+  position: relative;
+}
+
+.input-group i {
+  margin-right: 10px;
+  color: #999;
+}
+
+.input-group input {
+  border: none;
+  outline: none;
+  background: transparent;
+  flex: 1;
+  font-size: 14px;
+  padding-right: 40px;
+}
+
+/* Botões */
+button.btn-primary {
+  width: 100%;
+  padding: 14px;
+  margin-top: 10px;
+  border: none;
+  border-radius: 10px;
+  background: linear-gradient(to right, #10b981, #059669);
+  color: #fff;
+  font-weight: 500;
+  cursor: pointer;
+  transition: box-shadow 0.3s;
+}
+
+button.btn-primary:hover {
+  box-shadow: 0 6px 20px rgba(16,185,129,0.3);
+}
+
+button.btn-secondary {
+  width: 100%;
+  padding: 14px;
+  margin-top: 10px;
+  border: 2px solid #10b981;
+  border-radius: 10px;
+  background: transparent;
+  color: #059669;
+  font-weight: 500;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+button.btn-secondary:hover {
+  background: #ecfdf5;
+}
+ 
+
+/* Esqueci a senha */
+.forgot-pass {
+  background: none;
+  border: none;
+  color: #777;
+  margin-top: 20px;
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  justify-content: center;
+  transition: color 0.3s;
+}
+
+.forgot-pass:hover {
+  color: #059669;
+}
+
+/* Botão para mostrar/ocultar senha */
+.toggle-btn {
+  position: absolute;
+  right: 10px;
+  top: 60%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+}
+
+.icon {
+  width: 22px;
+  height: 22px;
+  color: rgba(0, 0, 0, 0.5);
+}

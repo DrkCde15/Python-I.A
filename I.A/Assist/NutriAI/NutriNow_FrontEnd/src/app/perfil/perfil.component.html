@@ -1,0 +1,64 @@
+<div class="perfil-container">
+  <div class="perfil-header">
+    <div class="perfil-info">
+      <div class="foto">{{ foto }}</div>
+      <h2>{{ nome }}</h2>
+    </div>
+    <div class="botoes">
+      <button class="excluir" (click)="excluirConta()">Excluir Conta</button>
+    </div>
+  </div>
+
+  <div class="dados">
+    <div class="campo">
+      <strong>Email</strong>
+      <p>{{ email }}</p>
+    </div>
+    <div class="campo">
+      <strong>Data de Nascimento</strong>
+      <p>{{ dataNascimento }}</p>
+    </div>
+    <div class="campo">
+      <strong>Meta de Treino</strong>
+      <p>{{ meta }}</p>
+    </div>
+    <div class="campo">
+      <strong>Altura / Peso</strong>
+      <p>{{ alturaPeso }}</p>
+    </div>
+  </div>
+
+  <button class="editar" (click)="abrirModal()" style="width: 100%; margin-top: 20px;">
+    Editar Perfil
+  </button>
+</div>
+
+<!-- Modal de Edição -->
+<div class="modal" *ngIf="mostrarModal">
+  <div class="modal-content">
+    <h3>Editar Perfil</h3>
+
+    <label>Nome:</label>
+    <input type="text" [(ngModel)]="nomeInput" placeholder="Digite o nome completo" />
+
+    <label>Email:</label>
+    <input type="email" [(ngModel)]="emailInput" placeholder="Digite o email" />
+
+    <label>Data de Nascimento:</label>
+    <input type="text" [(ngModel)]="dataInput" placeholder="DD/MM/AAAA" />
+
+    <label>Meta de Treino:</label>
+    <input type="text" [(ngModel)]="metaInput" placeholder="Ex: Ganhar massa" />
+
+    <label>Altura (m):</label>
+    <input type="text" [(ngModel)]="alturaInput" placeholder="Ex: 1.80" />
+
+    <label>Peso (kg):</label>
+    <input type="text" [(ngModel)]="pesoInput" placeholder="Ex: 75" />
+
+    <div class="modal-buttons">
+      <button class="cancelar" (click)="fecharModal()">Cancelar</button>
+      <button class="salvar" (click)="salvarPerfil()">Salvar</button>
+    </div>
+  </div>
+</div>

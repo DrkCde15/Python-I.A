@@ -1,0 +1,198 @@
+<!-- <div class="hero-section">
+        <div class="hero-container">
+            <div class="hero-logo">
+                <img src="assets/logo.png" alt="NutriNow Logo" class="logo-image">
+            </div>
+
+            
+            <h1 class="hero-title">
+                Nutri<span class="hero-title-highlight">Now</span>
+            </h1>
+            
+            <p class="hero-subtitle">
+                Transforme sua alimentação com inteligência artificial e
+                descubra o poder de uma nutrição personalizada para sua vida.
+            </p>
+            
+            <div class="cta-buttons">
+                <a href="/cadastro" class="btn-cta-primary">Começar Agora</a>
+                <a href="/chatbot" class="btn-cta-secondary">Conversar com NutriAI</a>
+            </div>
+        </div>
+    </div> -->
+
+    
+<!-- Hero Section -->
+<div class="hero-section" id="inicio">
+  <div class="hero-container">
+    <div class="hero-logo">
+      <img src="assets/logo.png" alt="NutriNow Logo" class="logo-image" />
+    </div>
+
+    <h1 class="hero-title">
+      Nutri<span class="hero-title-highlight">Now</span>
+    </h1>
+
+    <p class="hero-subtitle">
+      Transforme sua alimentação com inteligência artificial e descubra o poder
+      de uma nutrição personalizada para sua vida.
+    </p>
+
+    <div class="cta-buttons">
+      <a routerLink="/cadastro" class="btn-cta-primary">Começar Agora</a>
+      <a routerLink="/chatbot" class="btn-cta-secondary">Conversar com NutriAI</a>
+    </div>
+  </div>
+</div>
+
+
+<!-- Features Section -->
+<div class="features-section" id="dietas">
+  <h2 class="section-title">Por que escolher o NutriNow?</h2>
+  <p class="section-subtitle">Tecnologia de ponta para sua saúde</p>
+  <div class="features-container">
+    <div class="feature-card">
+      <div class="feature-icon">🤖</div>
+      <h3 class="feature-title">IA Personalizada</h3>
+      <p class="feature-description">
+        Nossa inteligência artificial aprende com você e cria planos únicos
+        baseados em suas necessidades, preferências e objetivos.
+      </p>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-icon">📊</div>
+      <h3 class="feature-title">Análise Completa</h3>
+      <p class="feature-description">
+        Acompanhe macros, micros, calorias e muito mais com dashboards
+        intuitivos e relatórios detalhados.
+      </p>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-icon">🎯</div>
+      <h3 class="feature-title">Metas Inteligentes</h3>
+      <p class="feature-description">
+        Defina e alcance seus objetivos com um sistema que se adapta ao seu
+        progresso em tempo real.
+      </p>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-icon">💬</div>
+      <h3 class="feature-title">Chat 24/7</h3>
+      <p class="feature-description">
+        Tire dúvidas, receba orientações e ajuste seu plano a qualquer momento
+        com nosso assistente virtual.
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- How It Works -->
+<div class="how-it-works">
+  <h2 class="section-title">Como Funciona?</h2>
+  <p class="section-subtitle">Simples, rápido e eficiente</p>
+  <div class="steps-container">
+    <div class="step">
+      <div class="step-number">1</div>
+      <h3 class="step-title">Cadastre-se</h3>
+      <p class="step-description">
+        Crie sua conta em menos de 2 minutos e preencha seu perfil nutricional.
+      </p>
+    </div>
+    <div class="step">
+      <div class="step-number">2</div>
+      <h3 class="step-title">Converse com a IA</h3>
+      <p class="step-description">
+        Nossa IA fará perguntas para entender suas necessidades e preferências.
+      </p>
+    </div>
+    <div class="step">
+      <div class="step-number">3</div>
+      <h3 class="step-title">Receba seu Plano</h3>
+      <p class="step-description">
+        Obtenha um plano alimentar personalizado e comece sua transformação!
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- FAQ -->
+<div class="faq-section" id="chat">
+  <h2 class="section-title">Perguntas Frequentes</h2>
+  <p class="section-subtitle">Tire suas dúvidas</p>
+  <div class="faq-container">
+    <div class="faq-item" (click)="toggleFaq($event)">
+      <div class="faq-question">
+        <span>Como funciona a personalização da IA?</span>
+        <span class="faq-icon">▼</span>
+      </div>
+      <div class="faq-answer">
+        Nossa IA analisa seus dados pessoais, objetivos, restrições alimentares
+        e preferências para criar um plano exclusivo. Ela aprende continuamente
+        com seu progresso e ajusta as recomendações automaticamente.
+      </div>
+    </div>
+
+    <div class="faq-item" (click)="toggleFaq($event)">
+      <div class="faq-question">
+        <span>Posso usar se tiver restrições alimentares?</span>
+        <span class="faq-icon">▼</span>
+      </div>
+      <div class="faq-answer">
+        Sim! O NutriNow trabalha com todas as restrições: vegetariano, vegano,
+        intolerâncias, alergias e preferências culturais ou religiosas.
+      </div>
+    </div>
+
+    <div class="faq-item" (click)="toggleFaq($event)">
+      <div class="faq-question">
+        <span>Preciso pagar para usar?</span>
+        <span class="faq-icon">▼</span>
+      </div>
+      <div class="faq-answer">
+        Oferecemos um plano gratuito com funcionalidades básicas. Para recursos
+        avançados, temos planos premium acessíveis.
+      </div>
+    </div>
+
+    <div class="faq-item" (click)="toggleFaq($event)">
+      <div class="faq-question">
+        <span>Como funciona o acompanhamento?</span>
+        <span class="faq-icon">▼</span>
+      </div>
+      <div class="faq-answer">
+        Você registra suas refeições e a IA analisa automaticamente. Recebe
+        feedback instantâneo e sugestões de melhorias.
+      </div>
+    </div>
+
+    <div class="faq-item" (click)="toggleFaq($event)">
+      <div class="faq-question">
+        <span>Substitui um nutricionista?</span>
+        <span class="faq-icon">▼</span>
+      </div>
+      <div class="faq-answer">
+        O NutriNow é uma ferramenta de apoio baseada em conhecimento científico.
+        Para casos específicos, recomendamos um nutricionista profissional.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Final CTA -->
+<div class="final-cta" id="cadastro">
+  <h2>Pronto para transformar sua vida?</h2>
+  <p>Junte-se a milhares de pessoas que já alcançaram seus objetivos</p>
+</div>
+
+<!-- Footer -->
+<footer class="footer">
+  <div class="footer-content">
+    <div class="footer-copyright">
+      © 2024 NutriNow. Todos os direitos reservados. | Desenvolvido com ❤️ para
+      sua saúde
+    </div>
+  </div>
+</footer>
