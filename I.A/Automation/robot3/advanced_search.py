@@ -2,8 +2,8 @@ import os
 import time
 from google import genai
 from dotenv import load_dotenv
-from ddgs import DDGS
-import trafilatura
+from ddgs import DDGS # DuckDuckGo Search API
+import trafilatura # Biblioteca avançada de scraping de conteúdo web
 from fpdf import FPDF
 
 load_dotenv()
