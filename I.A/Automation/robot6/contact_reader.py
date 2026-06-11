@@ -1,7 +1,6 @@
 """Carrega contatos de planilhas CSV e XLSX."""
 
 from __future__ import annotations
-
 import csv
 import unicodedata
 from dataclasses import dataclass
@@ -13,10 +12,8 @@ NAME_COLUMN_ALIASES = {"nome", "contato", "cliente", "name"}
 MESSAGE_COLUMN_ALIASES = {"mensagem", "message", "texto", "recado"}
 SUPPORTED_EXTENSIONS = {".csv", ".xlsx", ".xlsm"}
 
-
 class ContactSheetError(Exception):
     """Erro de leitura ou estrutura da planilha de contatos."""
-
 
 @dataclass(frozen=True)
 class ContactRow:
@@ -26,12 +23,10 @@ class ContactRow:
     message: str
     values: dict[str, str]
 
-
 @dataclass(frozen=True)
 class SheetRecords:
     headers: list[str]
     rows: list[dict[str, str]]
-
 
 def load_contact_rows(
     file_path: str,
@@ -42,13 +37,11 @@ def load_contact_rows(
     path = resolve_sheet_path(file_path)
     records = read_sheet_records(path)
     columns = resolve_contact_columns(records.headers, phone_column, name_column, message_column)
-
     return [
         build_contact_row(row_number, row, columns)
         for row_number, row in enumerate(records.rows, start=2)
         if row_has_content(row)
     ]
-
 
 def resolve_sheet_path(file_path: str) -> Path:
     path = Path(file_path).expanduser()
@@ -61,13 +54,11 @@ def resolve_sheet_path(file_path: str) -> Path:
 
     return path
 
-
 def read_sheet_records(path: Path) -> SheetRecords:
     if path.suffix.lower() == ".csv":
         return read_csv_records(path)
 
     return read_excel_records(path)
-
 
 def read_csv_records(path: Path) -> SheetRecords:
     with path.open(encoding="utf-8-sig", newline="") as file:
@@ -100,14 +91,11 @@ def read_excel_records(path: Path) -> SheetRecords:
     ensure_headers(headers)
     return SheetRecords(headers=headers, rows=records)
 
-
-
 def rows_to_records(headers: list[str], rows: Any) -> list[dict[str, str]]:
     return [
         dict(zip(headers, clean_cells(row), strict=False))
         for row in rows
     ]
-
 
 def resolve_contact_columns(
     headers: list[str],
@@ -120,7 +108,6 @@ def resolve_contact_columns(
         "name": resolve_optional_column(headers, name_column, NAME_COLUMN_ALIASES),
         "message": resolve_optional_column(headers, message_column, MESSAGE_COLUMN_ALIASES),
     }
-
 
 def resolve_required_column(
     headers: list[str],
@@ -135,10 +122,8 @@ def resolve_required_column(
 
     raise ContactSheetError(f"Nao encontrei a coluna de {column_description}.")
 
-
 def resolve_optional_column(headers: list[str], selected_column: str, aliases: set[str]) -> str:
     return resolve_column(headers, selected_column, aliases)
-
 
 def resolve_column(headers: list[str], selected_column: str, aliases: set[str]) -> str:
     normalized_headers = {normalize_text(header): header for header in headers if header}
@@ -153,7 +138,6 @@ def resolve_column(headers: list[str], selected_column: str, aliases: set[str]) 
 
     return ""
 
-
 def find_selected_column(
     normalized_headers: dict[str, str],
     selected_key: str,
@@ -163,7 +147,6 @@ def find_selected_column(
         return normalized_headers[selected_key]
 
     raise ContactSheetError(f"Coluna nao encontrada: {selected_column}")
-
 
 def build_contact_row(
     row_number: int,
@@ -178,18 +161,14 @@ def build_contact_row(
         values=row,
     )
 
-
 def clean_headers(headers: Any) -> list[str]:
     return [cell_to_text(header) for header in headers]
-
 
 def clean_record(row: dict[str, Any]) -> dict[str, str]:
     return {cell_to_text(key): cell_to_text(value) for key, value in row.items()}
 
-
 def clean_cells(row: Any) -> list[str]:
     return [cell_to_text(cell) for cell in row]
-
 
 def cell_to_text(value: Any) -> str:
     if value is None:
@@ -200,15 +179,12 @@ def cell_to_text(value: Any) -> str:
 
     return str(value).strip()
 
-
 def ensure_headers(headers: list[str]) -> None:
     if not any(headers):
         raise ContactSheetError("A planilha precisa ter cabecalho na primeira linha.")
 
-
 def row_has_content(row: dict[str, str]) -> bool:
     return any(value.strip() for value in row.values())
-
 
 def normalize_text(value: str) -> str:
     normalized = unicodedata.normalize("NFKD", value or "")

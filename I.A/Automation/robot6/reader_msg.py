@@ -1,14 +1,12 @@
 """Le mensagens pelo WhatsApp Web usando Playwright."""
 
 from __future__ import annotations
-
 import unicodedata
 from collections.abc import Callable
 from dataclasses import dataclass
 from pathlib import Path
 from threading import Event
 from typing import Any
-
 
 WHATSAPP_WEB_URL = "https://web.whatsapp.com"
 READY_SELECTOR = "div[role='grid'], div[contenteditable='true'][role='textbox']"
@@ -23,7 +21,6 @@ UNREAD_BADGE_SELECTOR = (
     "div[aria-label*='n\\00e3o lida' i]"
 )
 MAX_CHAT_ROWS_TO_SCAN = 30
-
 
 @dataclass(frozen=True)
 class WhatsAppWebOptions:

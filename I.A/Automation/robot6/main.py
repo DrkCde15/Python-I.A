@@ -1,7 +1,6 @@
 """Bot de WhatsApp com modo assistido e modo WhatsApp Web."""
 
 from __future__ import annotations
-
 import argparse
 import os
 import sys
@@ -15,7 +14,6 @@ from reader_msg import WhatsAppWebOptions, run_whatsapp_web_bot
 from contact_reader import ContactSheetError, load_contact_rows
 import pywhatkit
 from dotenv import load_dotenv
-
 
 load_dotenv()
 
@@ -34,16 +32,13 @@ DEFAULT_WAIT_TIME = int(os.getenv("PYWHATKIT_WAIT_TIME", DEFAULT_PYWHATKIT_WAIT_
 DEFAULT_CLOSE_TIME = int(os.getenv("PYWHATKIT_CLOSE_TIME", DEFAULT_PYWHATKIT_CLOSE_TIME))
 DEFAULT_CLOSE_TAB = os.getenv("PYWHATKIT_CLOSE_TAB")
 
-
 def normalize_text(value: str) -> str:
     normalized = unicodedata.normalize("NFKD", value or "")
     ascii_text = normalized.encode("ascii", "ignore").decode("ascii")
     return " ".join(ascii_text.lower().split())
 
-
 def is_enabled(value: str | None) -> bool:
     return normalize_text(value or "") in {"1", "true", "sim", "yes", "on"}
-
 
 def get_timezone() -> tzinfo:
     try:
@@ -51,11 +46,9 @@ def get_timezone() -> tzinfo:
     except ZoneInfoNotFoundError:
         return timezone.utc
 
-
 def current_time() -> str:
     now = datetime.now(get_timezone())
     return now.strftime("%d/%m/%Y %H:%M")
-
 
 def menu_message() -> str:
     return (
@@ -66,9 +59,6 @@ def menu_message() -> str:
         "Voce tambem pode enviar: oi, ajuda, horario, atendente ou status."
     )
 
-
-# CORREÇÃO 3: dict de dispatch substitui o if/elif encadeado em build_reply.
-# Chaves são os textos normalizados; valores são strings ou callables (sem args).
 _EXACT_REPLIES: dict[str, str | Callable[[], str]] = {
     # saudações
     "oi":            lambda: f"Ola! Eu sou o {BOT_NAME}. Envie 'menu' para ver as opcoes.",
@@ -105,7 +95,6 @@ _FALLBACK = (
     "Envie 'menu' para ver as opcoes disponiveis."
 )
 
-
 def build_reply(message: str) -> str:
     if not message or not message.strip():
         return "Recebi sua mensagem, mas ela veio sem texto. Pode enviar novamente?"
@@ -118,7 +107,6 @@ def build_reply(message: str) -> str:
 
     return handler() if callable(handler) else handler
 
-
 def validate_phone(phone_number: str) -> str:
     phone_number = phone_number.strip()
     digits = phone_number[1:] if phone_number.startswith("+") else phone_number
@@ -127,7 +115,6 @@ def validate_phone(phone_number: str) -> str:
         raise ValueError("Use o numero em formato internacional, exemplo: +5511999999999")
 
     return phone_number
-
 
 def send_whatsapp_message(
     phone_number: str,
@@ -149,11 +136,9 @@ def send_whatsapp_message(
         close_time,
     )
 
-
 def ask_to_send() -> bool:
     answer = input("Enviar essa resposta pelo WhatsApp Web? [s/N]: ")
     return normalize_text(answer) in {"s", "sim", "y", "yes"}
-
 
 def interactive_mode(args: argparse.Namespace) -> None:
     raw_phone = args.to or input("Numero do contato com DDI (+55...): ")
@@ -186,7 +171,6 @@ def interactive_mode(args: argparse.Namespace) -> None:
                 args.close_time,
             )
 
-
 def contacts_mode(args: argparse.Namespace) -> None:
 
     try:
@@ -206,13 +190,11 @@ def contacts_mode(args: argparse.Namespace) -> None:
     for contact in selected_contacts:
         send_contact_message(contact, args)
 
-
 def limit_contacts(contacts: list, limit: int) -> list:
     if limit <= 0:
         return contacts
 
     return contacts[:limit]
-
 
 def send_contact_message(contact, args: argparse.Namespace) -> None:
     try:
@@ -238,7 +220,6 @@ def send_contact_message(contact, args: argparse.Namespace) -> None:
     )
     wait_between_contacts(args.contact_delay)
 
-
 def format_contact_phone(phone_number: str, default_country_code: str) -> str:
     if not phone_number.strip():
         raise ValueError("telefone vazio.")
@@ -259,10 +240,8 @@ def format_contact_phone(phone_number: str, default_country_code: str) -> str:
 
     return validate_phone(f"+{country_digits}{phone_digits}")
 
-
 def digits_only(value: str) -> str:
     return "".join(character for character in value if character.isdigit())
-
 
 def build_contact_message(contact, args: argparse.Namespace) -> str:
     if args.message:
@@ -276,12 +255,10 @@ def build_contact_message(contact, args: argparse.Namespace) -> str:
 
     raise ValueError("sem mensagem; use --message ou uma coluna mensagem.")
 
-
 def render_contact_template(template: str, contact) -> str:
     fields = contact_template_fields(contact)
     validate_template_fields(template, fields)
     return template.format_map(fields)
-
 
 def contact_template_fields(contact) -> dict[str, str]:
     fields = {
@@ -298,7 +275,6 @@ def contact_template_fields(contact) -> dict[str, str]:
     )
     return fields
 
-
 def validate_template_fields(template: str, fields: dict[str, str]) -> None:
     for _, field_name, _, _ in Formatter().parse(template):
         if not field_name:
@@ -308,11 +284,9 @@ def validate_template_fields(template: str, fields: dict[str, str]) -> None:
         if root_field not in fields:
             raise ValueError(f"campo {{{root_field}}} nao existe na planilha.")
 
-
 def template_field_name(value: str) -> str:
     text = normalize_text(value)
     return text.replace(" ", "_")
-
 
 def print_contact_message(contact, phone_number: str, message: str) -> None:
     contact_name = contact.name or "sem nome"
@@ -320,17 +294,14 @@ def print_contact_message(contact, phone_number: str, message: str) -> None:
     print("Mensagem:")
     print(message)
 
-
 def ask_to_send_contact(contact, phone_number: str) -> bool:
     contact_name = contact.name or f"linha {contact.row_number}"
     answer = input(f"Enviar para {contact_name} ({phone_number})? [s/N]: ")
     return normalize_text(answer) in {"s", "sim", "y", "yes"}
 
-
 def wait_between_contacts(delay_seconds: float) -> None:
     if delay_seconds > 0:
         time.sleep(delay_seconds)
-
 
 def web_mode(args: argparse.Namespace) -> None:
 
@@ -344,14 +315,12 @@ def web_mode(args: argparse.Namespace) -> None:
     )
     run_whatsapp_web_bot(reply_to, options)
 
-
 def launch_gui() -> None:
     sys.modules.setdefault("main", sys.modules[__name__])
 
     from gui import main as gui_main
 
     gui_main()
-
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
@@ -455,7 +424,6 @@ def parse_args() -> argparse.Namespace:
     )
     return parser.parse_args()
 
-
 def main() -> None:
     if len(sys.argv) == 1:
         launch_gui()
@@ -505,7 +473,6 @@ def main() -> None:
         raise SystemExit("Use --incoming junto com --to, ou rode sem --incoming para o modo WhatsApp Web.")
 
     web_mode(args)
-
 
 if __name__ == "__main__":
     main()

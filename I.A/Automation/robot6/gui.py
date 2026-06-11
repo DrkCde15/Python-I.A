@@ -1,13 +1,11 @@
 """Interface Tkinter para controlar o bot sem comandos argparse."""
 
 from __future__ import annotations
-
 import os
 import queue
 import threading
 import tkinter as tk
 from tkinter import filedialog, messagebox, ttk
-
 from contact_reader import ContactSheetError, load_contact_rows
 from main import (
     DEFAULT_CLOSE_TIME,
@@ -22,10 +20,8 @@ from main import (
 )
 from reader_msg import WhatsAppWebOptions, run_whatsapp_web_bot
 
-
 DEFAULT_SESSION_DIR = os.getenv("WHATSAPP_WEB_SESSION_DIR", "whatsapp_session")
 DEFAULT_POLL_INTERVAL = "2"
-
 
 class BotGui(tk.Tk):
     def __init__(self) -> None:
@@ -332,11 +328,9 @@ class BotGui(tk.Tk):
 
         self.destroy()
 
-
 def main() -> None:
     app = BotGui()
     app.mainloop()
-
 
 if __name__ == "__main__":
     main()
