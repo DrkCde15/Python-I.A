@@ -6,6 +6,7 @@ import unicodedata
 from collections.abc import Callable
 from dataclasses import dataclass
 from pathlib import Path
+from threading import Event
 from typing import Any
 
 
@@ -30,6 +31,8 @@ class WhatsAppWebOptions:
     poll_interval_ms: int
     print_only: bool = False
     message_history_limit: int = 30
+    stop_event: Event | None = None
+    log_message: Callable[[str], None] | None = None
 
 
 @dataclass(frozen=True)
@@ -90,20 +93,29 @@ class WhatsAppWebClient:
 
     def run(self) -> None:
         self.open_whatsapp()
-        self.wait_until_logged_in()
+        if not self.wait_until_logged_in():
+            return
+
         self.remember_visible_messages()
         self.print_ready_message()
 
-        while True:
+        while not self.should_stop():
             self.answer_next_message()
-            self.page.wait_for_timeout(self.options.poll_interval_ms)
+            self.wait_for_next_poll()
 
     def open_whatsapp(self) -> None:
         self.page.goto(WHATSAPP_WEB_URL, wait_until="domcontentloaded")
 
-    def wait_until_logged_in(self) -> None:
-        print("Se aparecer QR Code, escaneie pelo WhatsApp do celular.")
-        self.page.wait_for_selector(READY_SELECTOR, timeout=0)
+    def wait_until_logged_in(self) -> bool:
+        self.log("Se aparecer QR Code, escaneie pelo WhatsApp do celular.")
+
+        while not self.should_stop():
+            if safe_count(self.page.locator(READY_SELECTOR)) > 0:
+                return True
+
+            self.page.wait_for_timeout(1000)
+
+        return False
 
     def remember_visible_messages(self) -> None:
         for message in self.read_visible_incoming_messages():
@@ -111,7 +123,7 @@ class WhatsAppWebClient:
 
     def print_ready_message(self) -> None:
         mode = "somente leitura" if self.options.print_only else "resposta automatica"
-        print(f"WhatsApp Web pronto em modo {mode}. Pressione Ctrl+C para sair.")
+        self.log(f"WhatsApp Web pronto em modo {mode}.")
 
     def answer_next_message(self) -> None:
         self.open_first_unread_chat()
@@ -168,8 +180,8 @@ class WhatsAppWebClient:
 
     def answer_message(self, message: WhatsAppMessage) -> None:
         reply = self.build_reply(message.text)
-        print(f"\nMensagem recebida: {message.text}")
-        print(f"Resposta gerada: {reply}")
+        self.log(f"\nMensagem recebida: {message.text}")
+        self.log(f"Resposta gerada: {reply}")
 
         if not self.options.print_only:
             self.send_message(reply)
@@ -190,6 +202,24 @@ class WhatsAppWebClient:
             raise RuntimeError("Campo de mensagem do WhatsApp Web nao encontrado.")
 
         return composers.nth(composer_count - 1)
+
+    def should_stop(self) -> bool:
+        return bool(self.options.stop_event and self.options.stop_event.is_set())
+
+    def wait_for_next_poll(self) -> None:
+        remaining_ms = self.options.poll_interval_ms
+
+        while remaining_ms > 0 and not self.should_stop():
+            delay_ms = min(250, remaining_ms)
+            self.page.wait_for_timeout(delay_ms)
+            remaining_ms -= delay_ms
+
+    def log(self, message: str) -> None:
+        if self.options.log_message:
+            self.options.log_message(message)
+            return
+
+        print(message)
 
 
 def read_message_text(message: Any) -> str:

@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 import os
+import sys
 import time
 import unicodedata
 from collections.abc import Callable
@@ -344,6 +345,14 @@ def web_mode(args: argparse.Namespace) -> None:
     run_whatsapp_web_bot(reply_to, options)
 
 
+def launch_gui() -> None:
+    sys.modules.setdefault("main", sys.modules[__name__])
+
+    from gui import main as gui_main
+
+    gui_main()
+
+
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description="Gera respostas e envia mensagens pelo WhatsApp Web."
@@ -448,6 +457,10 @@ def parse_args() -> argparse.Namespace:
 
 
 def main() -> None:
+    if len(sys.argv) == 1:
+        launch_gui()
+        return
+
     args = parse_args()
 
     if args.web and args.contacts:
