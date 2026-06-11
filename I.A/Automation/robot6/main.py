@@ -10,7 +10,8 @@ from collections.abc import Callable
 from datetime import datetime, timezone, tzinfo
 from string import Formatter
 from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
-
+from reader_msg import WhatsAppWebOptions, run_whatsapp_web_bot
+from contact_reader import ContactSheetError, load_contact_rows
 import pywhatkit
 from dotenv import load_dotenv
 
@@ -186,7 +187,6 @@ def interactive_mode(args: argparse.Namespace) -> None:
 
 
 def contacts_mode(args: argparse.Namespace) -> None:
-    from contact_sheet import ContactSheetError, load_contact_rows
 
     try:
         contacts = load_contact_rows(
@@ -332,7 +332,6 @@ def wait_between_contacts(delay_seconds: float) -> None:
 
 
 def web_mode(args: argparse.Namespace) -> None:
-    from whatsapp_web_reader import WhatsAppWebOptions, run_whatsapp_web_bot
 
     def reply_to(incoming_message: str) -> str:
         return args.message or build_reply(incoming_message)

@@ -8,7 +8,6 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
-
 PHONE_COLUMN_ALIASES = {"telefone", "celular", "whatsapp", "numero", "phone", "number"}
 NAME_COLUMN_ALIASES = {"nome", "contato", "cliente", "name"}
 MESSAGE_COLUMN_ALIASES = {"mensagem", "message", "texto", "recado"}
@@ -79,7 +78,13 @@ def read_csv_records(path: Path) -> SheetRecords:
     ensure_headers(headers)
     return SheetRecords(headers=headers, rows=rows)
 
-
+def load_openpyxl():
+    try:
+        import openpyxl
+        return openpyxl.load_workbook
+    except ImportError:
+        raise ContactSheetError("A biblioteca openpyxl e necessaria para ler arquivos Excel. Instale com 'pip install openpyxl'.")
+    
 def read_excel_records(path: Path) -> SheetRecords:
     load_workbook = load_openpyxl()
     workbook = load_workbook(path, read_only=True, data_only=True)
@@ -95,14 +100,6 @@ def read_excel_records(path: Path) -> SheetRecords:
     ensure_headers(headers)
     return SheetRecords(headers=headers, rows=records)
 
-
-def load_openpyxl() -> Any:
-    try:
-        from openpyxl import load_workbook
-    except ImportError as exc:
-        raise ContactSheetError("Instale o openpyxl com: pip install -r requirements.txt") from exc
-
-    return load_workbook
 
 
 def rows_to_records(headers: list[str], rows: Any) -> list[dict[str, str]]:
