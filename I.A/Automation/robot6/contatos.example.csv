@@ -1,0 +1,3 @@
+telefone,nome,mensagem
++5500000000000,Ana Exemplo,"Ola {nome}, tudo bem?"
+11000000000,Joao Exemplo,"Ola {nome}, este e um teste sem envio."
